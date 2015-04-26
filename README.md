@@ -172,4 +172,4 @@ scala> conv.to(new Event2(1,"foo")) should contain theSameElementsInOrderAs(Seq(
 
 ## Special Thanks ##
 
-To the (Shapeless)[https://github.com/milessabin/shapeless] developers for their amazing library.
+To the [Shapeless](https://github.com/milessabin/shapeless) developers for their amazing library.
