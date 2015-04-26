@@ -17,7 +17,7 @@ res0: String =
 In this example, a case class called `Event` is defined and immidiately used to read to and write from CSV.
 
 
-== Writing to CSV ==
+## Writing to CSV ##
 
 The simplest way possible to its CSV representation is to call `toCSV`
 
@@ -45,7 +45,7 @@ res2: List[Interval] = List(Interval(1,10), Interval(11,20)
 ```
 
 
-== Reading from CSV ==
+## Reading from CSV ##
 
 Reading from CSV is a bit different from writing to CSV. There are two different ways to read from CSV Strings, one
 safe and the other unsafe. See next paragraph for the difference. Other than that, a `CSVReader` instance should be
@@ -71,7 +71,7 @@ res1: List[Address] = List(Address(alice,wonderland)
 ```
 
 
-== Reading from CSV: Safe vs Unsafe ==
+## Reading from CSV: Safe vs Unsafe ##
 
 When reading values from String, the library comes in to flavors: one safe and one unsafe. Only one should be imported.
 The safe flavor captures errors
@@ -120,7 +120,7 @@ are the failures with associated the record number. From the information above w
 successfully while record 2 and 4 were not.
 
 
-== How it works ==
+## How it works ##
 
 The library is based on (Shapeless)[https://github.com/milessabin/shapeless] Generic system. Everything that has a
 Generic instance can be used with PureCSV. A Generic instance defines a representation for a given type in terms of
@@ -142,7 +142,7 @@ the `Generic`. So given a type
 ```scala
 class Event2(val ts: Long, var msg: String) {
   override def equals(o: Any): Boolean = o match {
-    case other:Event2 => (this.ts == other.ts && this.msg == other.msg)
+    case other:Event2 => (this.ts ## other.ts && this.msg ## other.msg)
     case _ => false
   }
   override def toString: String = s"Event($ts, $msg)"
@@ -170,7 +170,6 @@ scala> conv.to(new Event2(1,"foo")) should contain theSameElementsInOrderAs(Seq(
 ```
 
 
-
-== Special Thanks ==
+## Special Thanks ##
 
 To the (Shapeless)[https://github.com/milessabin/shapeless] developers for their amazing library.
