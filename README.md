@@ -14,7 +14,7 @@ res0: String =
 2,"bar
 ```
 
-In this example, a case class called `Event` is defined and immidiately used to read to and write from CSV.
+In this example, a case class called `Event` is defined and immediately used to read to and write from CSV.
 
 
 ## Writing to CSV ##
