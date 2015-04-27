@@ -1,7 +1,8 @@
 # PureCSV #
 
-PureCSV is a Scala library for conversion from and to the CSV format. The library gets rid of most of the boilerplate
-required to work with the CSV format
+PureCSV is a Scala library for working with the CSV format. The
+library gets rid of most of the boilerplate required to work with CSV
+
 
 ```scala
 scala> import purecsv.unsafe._
@@ -36,7 +37,7 @@ Currently it is only for Scala 2.11.x.
 
 ### Writing to CSV ###
 
-The simplest way possible to its CSV representation is to call `toCSV`
+To convert a value to a CSV String use `toCSV`
 
 ```scala
 scala> import purecsv.safe._
@@ -49,7 +50,7 @@ res2: String =
 11|20
 ```
 
-An utility method to write to file is also provided
+To write CSV values to a file use `writeCSVToFile` or `writeCSVToFileName`
 
 ```scala
 scala> import purecsv.unsafe._
@@ -58,7 +59,7 @@ scala> Seq(new Interval(1,10),new Interval(11,20)).writeCSVToFile("/tmp/example.
 scala> scala.io.Source.fromFile("/tmp/example.csv").getLines.toList
 res0: List[String] = List(1,10, 11,20)
 scala> CSVReader[Interval].readCSVFromFile("/tmp/example.csv")
-res2: List[Interval] = List(Interval(1,10), Interval(11,20)
+res2: List[Interval] = List(Interval(1,10), Interval(11,20))
 ```
 
 
@@ -82,16 +83,16 @@ scala> import purecsv.unsafe._
 scala> case class Address(name: String, address: String)
 scala> Seq(Address("alice","wonderland")).writeCSVToFileName("/tmp/example.csv", header=Some(Seq("name","address")))
 scala> scala.io.Source.fromFile("/tmp/example.csv").getLines.toList
-res2: List[String] = List(name,address, "alice","wonderland"
+res2: List[String] = List(name,address, "alice","wonderland")
 scala> CSVReader[Address].readCSVFromFileName("/tmp/example.csv", skipHeader=true)
-res1: List[Address] = List(Address(alice,wonderland)
+res1: List[Address] = List(Address(alice,wonderland))
 ```
 
 
 ### Reading from CSV: Safe vs Unsafe ###
 
-When reading values from String, the library comes in to flavors: one safe and one unsafe. Only one should be imported.
-The safe flavor captures errors
+For reading values, the library comes in to flavors: one safe and one unsafe.
+Only one should be imported.  The safe flavor captures errors
 
 ```scala
 scala> import purecsv.safe._
@@ -179,13 +180,17 @@ implicit val fooGeneric = new Generic[Event2] {
 }
 ```
 
-And then use that structure with PureCSV
+and then use that structure with PureCSV
 
 ```scala
 scala> val conv = RawFieldsConverter[Event2]
 scala> conv.to(new Event2(1,"foo")) should contain theSameElementsInOrderAs(Seq("1","\"foo\""))
 ```
 
+
+## License ##
+
+[Apache License v2](https://www.apache.org/licenses/LICENSE-2.0)
 
 ## Special Thanks ##
 
