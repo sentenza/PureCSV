@@ -109,7 +109,7 @@ scala> import purecsv.safe._
 scala> case class Person(name: String, age: Int)
 scala> CSVReader[Person].readCSVFromString("alice,1")
 res0: List[Person] = List(Person(alice,1))
-scala> scala> CSVReader[Person].readCSVFromString("alice,nan")
+scala> CSVReader[Person].readCSVFromString("alice,nan")
 java.lang.NumberFormatException: For input string: "nan"
   at java.lang.NumberFormatException.forInputString(NumberFormatException.java:65)
   at java.lang.Integer.parseInt(Integer.java:492)
