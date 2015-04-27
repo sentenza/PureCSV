@@ -14,10 +14,27 @@ res0: String =
 2,"bar
 ```
 
-In this example, a case class called `Event` is defined and immediately used to read to and write from CSV.
+In this example, a case class called `Event` is defined and immediately used to
+read to and write from CSV.
 
 
-## Writing to CSV ##
+## Add the library to your project ##
+
+Add the Sonatype release repository to the resolvers and then add the library to
+the project libraryDependencies.
+
+```scala
+resolvers += Resolver.sonatypeRepo("releases")
+
+libraryDependencies += "com.github.melrief" %% "purecsv" % "0.0.1"
+```
+
+Currently it is only for Scala 2.11.x.
+
+
+## Use the library ##
+
+### Writing to CSV ###
 
 The simplest way possible to its CSV representation is to call `toCSV`
 
@@ -45,7 +62,7 @@ res2: List[Interval] = List(Interval(1,10), Interval(11,20)
 ```
 
 
-## Reading from CSV ##
+### Reading from CSV ###
 
 Reading from CSV is a bit different from writing to CSV. There are two different ways to read from CSV Strings, one
 safe and the other unsafe. See next paragraph for the difference. Other than that, a `CSVReader` instance should be
@@ -71,7 +88,7 @@ res1: List[Address] = List(Address(alice,wonderland)
 ```
 
 
-## Reading from CSV: Safe vs Unsafe ##
+### Reading from CSV: Safe vs Unsafe ###
 
 When reading values from String, the library comes in to flavors: one safe and one unsafe. Only one should be imported.
 The safe flavor captures errors
@@ -120,9 +137,9 @@ are the failures with associated the record number. From the information above w
 successfully while record 2 and 4 were not.
 
 
-## How it works ##
+### How it works ###
 
-The library is based on (Shapeless)[https://github.com/milessabin/shapeless] Generic system. Everything that has a
+The library is based on [Shapeless](https://github.com/milessabin/shapeless) Generic system. Everything that has a
 Generic instance can be used with PureCSV. A Generic instance defines a representation for a given type in terms of
 [heterogenous lists](https://github.com/milessabin/shapeless/wiki/Feature-overview:-shapeless-2.0.0#heterogenous-lists)
 and function to convert from/to that representation
