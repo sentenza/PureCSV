@@ -55,7 +55,7 @@ To write CSV values to a file use `writeCSVToFile` or `writeCSVToFileName`
 ```scala
 scala> import purecsv.unsafe._
 scala> class Interval(val start: Long, val end: Long) { override def toString: String = s"Interval($start,$end)" }
-scala> Seq(new Interval(1,10),new Interval(11,20)).writeCSVToFile("/tmp/example.csv")
+scala> Seq(new Interval(1,10),new Interval(11,20)).writeCSVToFileName("/tmp/example.csv")
 scala> scala.io.Source.fromFile("/tmp/example.csv").getLines.toList
 res0: List[String] = List(1,10, 11,20)
 scala> CSVReader[Interval].readCSVFromFile("/tmp/example.csv")
@@ -73,7 +73,7 @@ used to read data
 scala> import purecsv.unsafe._
 scala> class Interval(val start: Long, val end: Long) { override def toString: String = s"Interval($start,$end)" }
 scala> CSVReader[Interval].readCSVFromFile("/tmp/example.csv")
-res2: List[Interval] = List(Interval(1,10), Interval(11,20)
+res2: List[Interval] = List(Interval(1,10), Interval(11,20))
 ```
 
 If the source has a header, it is possible to skip it.
@@ -91,7 +91,7 @@ res1: List[Address] = List(Address(alice,wonderland))
 
 ### Reading from CSV: Safe vs Unsafe ###
 
-For reading values, the library comes in to flavors: one safe and one unsafe.
+For reading values, the library comes in two flavors: one safe and one unsafe.
 Only one should be imported.  The safe flavor captures errors
 
 ```scala
@@ -121,7 +121,7 @@ The two flavors solve different problems: the safe one helps dealing with inputs
 formatted or event erroneous while the unsafe flavor reads data that is well formatted, for instance the one created
 by this library.
 
-The safe flavor has also another characteristic: it helps the user understanding which records gave error by collecting
+The safe flavor has also another characteristic: it helps the user understanding which records gave errors by collecting
 them
 
 ```scala
@@ -184,7 +184,6 @@ and then use that structure with PureCSV
 
 ```scala
 scala> val conv = RawFieldsConverter[Event2]
-scala> conv.to(new Event2(1,"foo")) should contain theSameElementsInOrderAs(Seq("1","\"foo\""))
 ```
 
 
