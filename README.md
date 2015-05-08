@@ -1,5 +1,7 @@
 # PureCSV #
 
+[![Build Status](https://travis-ci.org/melrief/PureCSV.svg?branch=master)](https://travis-ci.org/melrief/PureCSV)
+
 PureCSV is a Scala library for working with the CSV format. The
 library gets rid of most of the boilerplate required to work with CSV
 
