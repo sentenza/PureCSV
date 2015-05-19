@@ -108,7 +108,7 @@ res1: List[scala.util.Try[Person]] = List(Failure(java.lang.NumberFormatExceptio
 The unsafe flavor, instead, ignores errors
 
 ```scala
-scala> import purecsv.safe._
+scala> import purecsv.unsafe._
 scala> case class Person(name: String, age: Int)
 scala> CSVReader[Person].readCSVFromString("alice,1")
 res0: List[Person] = List(Person(alice,1))
