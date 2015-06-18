@@ -28,6 +28,11 @@ class ConverterSuite extends FunSuite with Matchers {
     StringConverter[Boolean].tryFrom("TRUE") should be (Success(true))
   }
 
+  test("conversion string -> Try[Option[Int]] works") {
+    StringConverter[Option[Int]].tryFrom("") should be (Success(None))
+    StringConverter[Option[Int]].tryFrom("1") should be (Success(Some(1)))
+  }
+
   test("conversion String -> HNil works") {
     RawFieldsConverter[HNil].tryFrom(Seq.empty) should be (Success(HNil))
   }
@@ -37,11 +42,12 @@ class ConverterSuite extends FunSuite with Matchers {
     conv.tryFrom(Seq("foo","2")) should be (Success("foo" :: 2 :: HNil))
   }
 
-  case class Event(ts: Long, msg: String)
+  case class Event(ts: Long, msg: String, user: Option[Int])
 
   test("conversion String -> case class works") {
     val conv = RawFieldsConverter[Event]
-    conv.tryFrom(Seq("2","barfoo")) should be (Success(Event(2,"barfoo")))
+    conv.tryFrom(Seq("2","barfoo","")) should be (Success(Event(2,"barfoo",None)))
+    conv.tryFrom(Seq("2","barfoo","1")) should be (Success(Event(2,"barfoo",Some(1))))
   }
 
   class Event2(val ts: Long, var msg: String) {

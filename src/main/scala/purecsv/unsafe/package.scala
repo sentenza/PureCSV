@@ -32,6 +32,7 @@ package object unsafe {
   implicit val longc:   StringConverter[Long]    = purecsv.unsafe.converter.defaults.string.longc
   implicit val shortc:  StringConverter[Short]   = purecsv.unsafe.converter.defaults.string.shortc
   implicit val stringc: StringConverter[String]  = purecsv.unsafe.converter.defaults.string.stringc
+  implicit def optionc[A](implicit ac: StringConverter[A]): StringConverter[Option[A]] = purecsv.unsafe.converter.defaults.string.optionc
 
 
   // Raw Fields

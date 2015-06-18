@@ -44,4 +44,12 @@ package object string {
     override def to(s: String): String = "\"" + s + "\""
   }
 
+  implicit def optionc[A](implicit ac: StringConverter[A]): StringConverter[Option[A]] = new StringConverter[Option[A]] {
+    override def from(s: String): Option[A] = s match {
+      case "" => None
+      case x  => Some(ac.from(x))
+    }
+    override def to(v: Option[A]): String = v.map(ac.to).getOrElse("")
+  }
+
 }
