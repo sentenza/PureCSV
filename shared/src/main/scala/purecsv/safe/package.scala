@@ -16,7 +16,7 @@ package purecsv
 
 import java.io._
 
-import purecsv.unsafe.OpenCSVSplitter
+//import purecsv.unsafe.OpenCSVSplitter
 import purecsv.safe.converter.{RawFieldsConverter, StringConverter}
 import shapeless.{Generic, ::, HList, HNil}
 
@@ -62,12 +62,12 @@ package object safe {
     def rfc: RawFieldsConverter[A]
 
     def readCSVFromReader(r: Reader, skipHeader: Boolean = false): Iterator[Try[A]] = {
-      val records = if (skipHeader) {
+/*      val records = if (skipHeader) {
         OpenCSVSplitter.getRecordsSkipHeader(r)
       } else {
         OpenCSVSplitter.getRecords(r)
-      }
-      records.map(rfc.tryFrom)
+      }*/
+      throw new Error("OPENCSV DOES NOT WORK FOR SCALAJS!")
     }
 
     def readCSVFromString(s: String, skipHeader: Boolean = false): List[Try[A]] = {
