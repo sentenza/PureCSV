@@ -1,6 +1,6 @@
 name := "purecsv"
 
-version := "0.0.2"
+version := "0.0.3"
 
 organization := "com.github.melrief"
 
@@ -8,7 +8,7 @@ publishMavenStyle := true
 
 publishArtifact in Test := false
 
-scalaVersion := "2.11.6"
+scalaVersion := "2.11.7"
 
 scalacOptions ++= Seq("-feature", "-deprecation")
 
@@ -26,7 +26,7 @@ publishTo <<= version { v: String =>
 }
 
 libraryDependencies ++= Seq(
-  "com.chuusai" %% "shapeless" % "2.1.0",
+  "com.chuusai" %% "shapeless" % "2.2.4",
   "net.sf.opencsv" % "opencsv" % "2.3",
   "org.scalatest" %% "scalatest" % "2.2.1" % "test"
 )
