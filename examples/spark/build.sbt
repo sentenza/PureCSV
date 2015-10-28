@@ -14,7 +14,7 @@ resolvers ++= Seq(
 libraryDependencies ++= Seq(
     "org.apache.spark"   %% "spark-core" % "1.3.1"
   , "joda-time"          %  "joda-time"  % "2.7"
-  , "com.github.melrief" %% "purecsv"    % "0.0.3"
+  , "com.github.melrief" %% "purecsv"    % "0.0.4"
   , "org.scalatest"      %% "scalatest"  % "2.2.1" % "test"
 
 )
