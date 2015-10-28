@@ -33,7 +33,7 @@ resolvers += Resolver.sonatypeRepo("releases")
 libraryDependencies += "com.github.melrief" %% "purecsv" % "0.0.3"
 ```
 
-Currently it is only for Scala 2.11.x.
+The library works for both Scala 2.10.x and 2.11.x.
 
 
 ## Use the library ##
