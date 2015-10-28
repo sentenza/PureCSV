@@ -30,7 +30,7 @@ the project libraryDependencies.
 ```scala
 resolvers += Resolver.sonatypeRepo("releases")
 
-libraryDependencies += "com.github.melrief" %% "purecsv" % "0.0.3"
+libraryDependencies += "com.github.melrief" %% "purecsv" % "0.0.4"
 ```
 
 The library works for both Scala 2.10.x and 2.11.x.
