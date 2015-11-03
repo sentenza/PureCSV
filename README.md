@@ -25,7 +25,7 @@ read to and write from CSV.
 ## Add the library to your project ##
 
 Add the Sonatype release repository to the resolvers and then add the library to
-the project libraryDependencies.
+the project libraryDependencies:
 
 ```scala
 resolvers += Resolver.sonatypeRepo("releases")
@@ -33,7 +33,15 @@ resolvers += Resolver.sonatypeRepo("releases")
 libraryDependencies += "com.github.melrief" %% "purecsv" % "0.0.4"
 ```
 
-The library works for both Scala 2.10.x and 2.11.x.
+The library works for both Scala 2.10.x and 2.11.x. If you use Scala 2.10.x you
+also need to add the [macro paradise plugin](http://docs.scala-lang.org/overviews/macros/paradise.html):
+
+```scala
+libraryDependencies ++= Seq(
+    "com.github.melrief" %% "purecsv" % "0.0.4"
+  , compilerPlugin("org.scalamacros" % "paradise" % "2.0.1" cross CrossVersion.full)
+)
+```
 
 
 ## Use the library ##
