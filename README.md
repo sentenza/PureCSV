@@ -181,7 +181,7 @@ implicit val dateTimeStringConverter = new StringConverter[DateTime] {
     }
 
     override def to(dateTime: DateTime): String = {
-      ISODateTimeFormat.dateTimeParser().print(dateTime)
+      ISODateTimeFormat.dateTime().print(dateTime)
     }
   }
 ```
