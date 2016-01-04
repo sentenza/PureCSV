@@ -60,12 +60,13 @@ package object unsafe {
 
     def readCSVFromReader(r: Reader, skipHeader: Boolean = false): Iterator[A] = {
       val records = if (skipHeader) {
-        OpenCSVSplitter.getRecordsSkipHeader(r)
+        RecordSplitterImpl.getRecordsSkipHeader(r)
       } else {
-        OpenCSVSplitter.getRecords(r)
+        RecordSplitterImpl.getRecords(r)
       }
-      records.map(rfc.from)
+      records.map(record => rfc.from(record.toSeq))
     }
+
     def readCSVFromString(s: String, skipHeader: Boolean = false): List[A] = {
       val r = new StringReader(s)
       val rs = readCSVFromReader(r).toList

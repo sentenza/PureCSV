@@ -16,20 +16,20 @@ package purecsv
 
 import java.io.CharArrayReader
 
-import purecsv.unsafe.OpenCSVSplitter
+import purecsv.unsafe.RecordSplitterImpl
 import org.scalatest.{FunSuite, Matchers}
 
 
 class RecordSplitterSuite extends FunSuite with Matchers {
 
-  test("OpenCSVSplitter works with no records") {
+  test("RecordSplitterImpl works with no records") {
     val reader = new CharArrayReader("".toCharArray)
-    OpenCSVSplitter.getRecords(reader).toSeq should contain theSameElementsInOrderAs(Seq.empty)
+    RecordSplitterImpl.getRecords(reader).toSeq should contain theSameElementsInOrderAs(Seq.empty)
   }
 
-  test("OpenCSVSplitter works with two records") {
+  test("RecordSplitterImpl works with two records") {
     val reader = new CharArrayReader("foo,bar\nbar,foo".toCharArray)
-    OpenCSVSplitter.getRecords(reader).toSeq should contain theSameElementsInOrderAs(Seq(Seq("foo","bar"),Seq("bar","foo")))
+    RecordSplitterImpl.getRecords(reader).toSeq should contain theSameElementsInOrderAs(Seq(Array("foo","bar"),Array("bar","foo")))
   }
 
 }
