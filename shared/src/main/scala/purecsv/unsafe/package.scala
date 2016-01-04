@@ -59,12 +59,14 @@ package object unsafe {
     def rfc: RawFieldsConverter[A]
 
     def readCSVFromReader(r: Reader, skipHeader: Boolean = false): Iterator[A] = {
-      val records = if (skipHeader) {
+/*      val records = if (skipHeader) {
         OpenCSVSplitter.getRecordsSkipHeader(r)
       } else {
         OpenCSVSplitter.getRecords(r)
       }
-      records.map(rfc.from)
+      records.map(rfc.from)*/
+      throw new Error("OPENCSV DOES NOT WORK FOR SCALAJS!")
+      ???
     }
     def readCSVFromString(s: String, skipHeader: Boolean = false): List[A] = {
       val r = new StringReader(s)
