@@ -22,7 +22,10 @@ import java.io.Reader
  */
 object RecordSplitterImpl extends RecordSplitter[Reader] {
 
-  override def getRecords(reader: Reader, fieldSep: Char, quoteChar: Char, firstLine: Int): Iterator[Array[String]] = {
+  override def getRecords(reader: Reader,
+                          fieldSep: Char,
+                          quoteChar: Char,
+                          firstLine: Int): Iterator[Array[String]] = {
     val csvReader = new com.github.marklister.collections.io.CSVReader(reader, fieldSep, quoteChar, firstLine)
     csvReader.filter(array => array.size != 1 || array(0) != "") // skip empty lines
   }

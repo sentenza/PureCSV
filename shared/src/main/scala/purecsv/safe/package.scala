@@ -16,7 +16,7 @@ package purecsv
 
 import java.io._
 
-import purecsv.unsafe.RecordSplitterImpl
+import purecsv.unsafe.{RecordSplitter,RecordSplitterImpl}
 import purecsv.safe.converter.{RawFieldsConverter, StringConverter}
 import shapeless.{Generic, ::, HList, HNil}
 
@@ -61,31 +61,41 @@ package object safe {
 
     def rfc: RawFieldsConverter[A]
 
-    def readCSVFromReader(r: Reader, skipHeader: Boolean = false): Iterator[Try[A]] = {
+    def readCSVFromReader(r: Reader,
+                          delimiter:Char = RecordSplitter.defaultFieldSeparator,
+                          skipHeader: Boolean = false
+                          ): Iterator[Try[A]] = {
       val records = if (skipHeader) {
-        RecordSplitterImpl.getRecordsSkipHeader(r)
+        RecordSplitterImpl.getRecordsSkipHeader(r, delimiter)
       } else {
-        RecordSplitterImpl.getRecords(r)
+        RecordSplitterImpl.getRecords(r, delimiter)
       }
       records.map(record => rfc.tryFrom(record.toSeq))
     }
 
-    def readCSVFromString(s: String, skipHeader: Boolean = false): List[Try[A]] = {
+    def readCSVFromString(s: String,
+                          delimiter:Char = RecordSplitter.defaultFieldSeparator,
+                          skipHeader: Boolean = false
+                          ): List[Try[A]] = {
       val r = new StringReader(s)
-      val rs = readCSVFromReader(r).toList
+      val rs = readCSVFromReader(r, delimiter).toList
       r.close()
       rs
     }
 
-    def readCSVFromFile(f: File, skipHeader: Boolean = false): List[Try[A]] = {
+    def readCSVFromFile(f: File,
+                        delimiter:Char = RecordSplitter.defaultFieldSeparator,
+                        skipHeader: Boolean = false): List[Try[A]] = {
       val r = new BufferedReader(new FileReader(f))
-      val rs = readCSVFromReader(r, skipHeader).toList
+      val rs = readCSVFromReader(r, delimiter, skipHeader).toList
       r.close()
       rs
     }
 
-    def readCSVFromFileName(fileName: String, skipHeader: Boolean = false): List[Try[A]] = {
-      readCSVFromFile(new File(fileName), skipHeader)
+    def readCSVFromFileName(fileName: String,
+                            delimiter:Char = RecordSplitter.defaultFieldSeparator,
+                            skipHeader: Boolean = false): List[Try[A]] = {
+      readCSVFromFile(new File(fileName), delimiter, skipHeader )
     }
 
   }

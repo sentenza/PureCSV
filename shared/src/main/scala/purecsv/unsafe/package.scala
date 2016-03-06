@@ -58,30 +58,40 @@ package object unsafe {
 
     def rfc: RawFieldsConverter[A]
 
-    def readCSVFromReader(r: Reader, skipHeader: Boolean = false): Iterator[A] = {
+    def readCSVFromReader(r: Reader,
+                          delimiter:Char = RecordSplitter.defaultFieldSeparator,
+                          skipHeader: Boolean = false
+                          ): Iterator[A] = {
       val records = if (skipHeader) {
-        RecordSplitterImpl.getRecordsSkipHeader(r)
+        RecordSplitterImpl.getRecordsSkipHeader(r, delimiter)
       } else {
-        RecordSplitterImpl.getRecords(r)
+        RecordSplitterImpl.getRecords(r, delimiter)
       }
       records.map(record => rfc.from(record.toSeq))
     }
 
-    def readCSVFromString(s: String, skipHeader: Boolean = false): List[A] = {
+    def readCSVFromString(s: String,
+                          skipHeader: Boolean = false,
+                          delimiter:Char = RecordSplitter.defaultFieldSeparator): List[A] = {
       val r = new StringReader(s)
-      val rs = readCSVFromReader(r).toList
+      val rs = readCSVFromReader(r, delimiter, skipHeader).toList
       r.close()
       rs
     }
 
-    def readCSVFromFile(f: File, skipHeader: Boolean = false): List[A] = {
+
+    def readCSVFromFile(f: File,
+                        skipHeader: Boolean = false,
+                        delimiter:Char = RecordSplitter.defaultFieldSeparator): List[A] = {
       val r = new BufferedReader(new FileReader(f))
-      val rs = readCSVFromReader(r, skipHeader).toList
+      val rs = readCSVFromReader(r, delimiter, skipHeader).toList
       r.close()
       rs
     }
 
-    def readCSVFromFileName(fileName: String, skipHeader: Boolean = false): List[A] = {
+    def readCSVFromFileName(fileName: String,
+                            skipHeader: Boolean = false,
+                            delimiter:Char = RecordSplitter.defaultFieldSeparator): List[A] = {
       readCSVFromFile(new File(fileName), skipHeader)
     }
 
