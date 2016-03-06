@@ -33,15 +33,19 @@ trait RecordSplitter[R] {
    * Like [[getRecords(R, Char, Char, Int):Iterator[Seq[String]]*]] but with all parameters except the first set
    * to defaults and first line set to 0
    */
-  def getRecords(r: R): Iterator[Array[String]] = {
-    getRecords(r, RecordSplitter.defaultFieldSeparator, RecordSplitter.defaultQuoteChar, 0)
+  def getRecords(r: R,
+                fieldSep:  Char = RecordSplitter.defaultFieldSeparator,
+                quoteChar: Char = RecordSplitter.defaultQuoteChar): Iterator[Array[String]] = {
+    getRecords(r, fieldSep, quoteChar,0)
   }
 
   /**
    * Like [[getRecords(R, Char, Char, Int):Iterator[Seq[String]]*]] but with all parameters except the first set
    * to defaults and first line set to 1 to skip the first line. Useful to skip headers.
    */
-  def getRecordsSkipHeader(r: R): Iterator[Array[String]] = {
-    getRecords(r, RecordSplitter.defaultFieldSeparator, RecordSplitter.defaultQuoteChar, 1)
+  def getRecordsSkipHeader(r: R,
+                fieldSep:  Char = RecordSplitter.defaultFieldSeparator,
+                quoteChar: Char = RecordSplitter.defaultQuoteChar): Iterator[Array[String]] = {
+    getRecords(r, fieldSep, quoteChar,1)
   }
 }

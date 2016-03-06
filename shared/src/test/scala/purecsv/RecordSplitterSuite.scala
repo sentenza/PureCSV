@@ -32,4 +32,14 @@ class RecordSplitterSuite extends FunSuite with Matchers {
     RecordSplitterImpl.getRecords(reader).toSeq should contain theSameElementsInOrderAs(Seq(Array("foo","bar"),Array("bar","foo")))
   }
 
+
+  test("RecordSplitterImpl works with custom delimiter") {
+    val reader = new CharArrayReader("foo|bar\nbar|foo".toCharArray)
+    RecordSplitterImpl.getRecords(reader, '|').toSeq should contain theSameElementsInOrderAs(Seq(Array("foo","bar"),Array("bar","foo")))
+  }
+
+  test("RecordSplitterImpl works with custom UTF8 delimiter") {
+    val reader = new CharArrayReader("foo☃bar\nbar☃foo".toCharArray)
+    RecordSplitterImpl.getRecords(reader, '☃').toSeq should contain theSameElementsInOrderAs(Seq(Array("foo","bar"),Array("bar","foo")))
+  }
 }
