@@ -41,7 +41,7 @@ package object string {
   implicit val shortc:  StringConverter[Short]   = mkStringConverter(_.toShort,_.toString)
   implicit val stringc: StringConverter[String]  = new StringConverter[String] {
     override def from(s: String): String = s
-    override def to(s: String): String = "\"" + s + "\""
+    override def to(s: String): String = "\"" + s.replaceAllLiterally("\"", "\"\"") + "\""
   }
 
   implicit def optionc[A](implicit ac: StringConverter[A]): StringConverter[Option[A]] = new StringConverter[Option[A]] {

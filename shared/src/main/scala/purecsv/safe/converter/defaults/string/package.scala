@@ -22,7 +22,6 @@ package object string {
   import purecsv.safe.converter.StringConverterUtils.mkStringConverter
   import purecsv.unsafe.converter.defaults.string.{strToBool, strToChar}
 
-
   implicit val boolc:   StringConverter[Boolean] = mkStringConverter(s => Try(strToBool(s)),_.toString)
   implicit val bytec:   StringConverter[Byte]    = mkStringConverter(s => Try(s.toByte),_.toString)
   implicit val charc:   StringConverter[Char]    = mkStringConverter(s => Try(strToChar(s)),_.toString)
@@ -33,7 +32,7 @@ package object string {
   implicit val shortc:  StringConverter[Short]   = mkStringConverter(s => Try(s.toShort),_.toString)
   implicit val stringc: StringConverter[String]  = new StringConverter[String] {
     override def tryFrom(s: String): Try[String] = Success(s)
-    override def to(s: String): String = "\"" + s + "\""
+    override def to(s: String): String = "\"" + s.replaceAllLiterally("\"", "\"\"") + "\""
   }
 
   implicit def optionc[A](implicit ac: StringConverter[A]): StringConverter[Option[A]] = new StringConverter[Option[A]] {
