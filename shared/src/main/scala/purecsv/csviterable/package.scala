@@ -22,8 +22,10 @@ import purecsv.unsafe.converter.Converter
 
 package object csviterable {
 
+
   implicit class CSVRecord[A,R <: Converter[A,Seq[String]]](a: A)(implicit rfc: R) {
-    def toCSV(sep: String = defaultFieldSeparatorStr): String = rfc.to(a).mkString(sep)
+    def toCSV(sep: String = defaultFieldSeparatorStr): String =
+      rfc.to(a).mkString(sep)
   }
 
   /**
@@ -37,7 +39,8 @@ package object csviterable {
   implicit class CSVIterable[A,R <: Converter[A,Seq[String]]](iter: Iterable[A])(implicit rfc: R) {
 
     /** Convert all the values in [[iter]] into CSV lines */
-    def toCSVLines(sep: String = defaultFieldSeparatorStr): Iterable[String] = iter.map(_.toCSV(sep))
+    def toCSVLines(sep: String = defaultFieldSeparatorStr): Iterable[String] =
+      iter.map(a => rfc.to(a).mkString(sep))
 
     /** Convert the values in [[iter]] into a CSV string */
     def toCSV(sep: String = defaultFieldSeparatorStr): String = toCSVLines(sep).mkString(System.lineSeparator())
@@ -51,7 +54,7 @@ package object csviterable {
      */
     def writeCSVTo(writer: PrintWriter, sep: String, header: Option[Seq[String]]): Unit = {
       header.foreach(h => writer.println(h.mkString(sep)))
-      iter.toCSVLines(sep).foreach(writer.println)
+      toCSVLines(sep).foreach(writer.println)
     }
 
     /** @see [[writeCSVTo]] */
@@ -63,7 +66,7 @@ package object csviterable {
 
     /** @see [[writeCSVToFile(File,String,Option[Seq[String]]):Unit*]] */
     def writeCSVToFileName(fileName: String, sep: String = defaultFieldSeparatorStr, header: Option[Seq[String]] = None): Unit = {
-      iter.writeCSVToFile(new File(fileName), sep, header)
+      writeCSVToFile(new File(fileName), sep, header)
     }
   }
 }
