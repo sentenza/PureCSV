@@ -30,19 +30,10 @@ the project libraryDependencies:
 ```scala
 resolvers += Resolver.sonatypeRepo("releases")
 
-libraryDependencies += "com.github.melrief" %% "purecsv" % "0.0.7"
+libraryDependencies += "com.github.melrief" %% "purecsv" % "0.0.8"
 ```
 
-The library works for both Scala 2.10.x and 2.11.x. If you use Scala 2.10.x you
-also need to add the [macro paradise plugin](http://docs.scala-lang.org/overviews/macros/paradise.html):
-
-```scala
-libraryDependencies ++= Seq(
-    "com.github.melrief" %% "purecsv" % "0.0.7"
-  , compilerPlugin("org.scalamacros" % "paradise" % "2.0.1" cross CrossVersion.full)
-)
-```
-
+The library works for both Scala 2.11.x and 2.12.x.
 
 ## Use the library ##
 
