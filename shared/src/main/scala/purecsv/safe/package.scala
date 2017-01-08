@@ -78,7 +78,7 @@ package object safe {
                           skipHeader: Boolean = false
                           ): List[Try[A]] = {
       val r = new StringReader(s)
-      val rs = readCSVFromReader(r, delimiter).toList
+      val rs = readCSVFromReader(r, delimiter, skipHeader).toList
       r.close()
       rs
     }
