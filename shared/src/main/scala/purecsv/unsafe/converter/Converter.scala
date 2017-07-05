@@ -15,7 +15,7 @@
 package purecsv.unsafe.converter
 
 /** Typeclass for Converters of A from/to B */
-trait Converter[A,B] {
+trait Converter[A,B] extends Serializable {
   /**
    * @param b The initial value
    * @return b converted to the type [[A]]
