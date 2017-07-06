@@ -16,9 +16,11 @@ package purecsv.unsafe.converter
 
 import purecsv.unsafe.converter.defaults.rawfields._
 import purecsv.unsafe.converter.defaults.string._
+import purecsv.util.serializeAndDeserialize
 import org.scalatest.{FunSuite, Matchers}
 import shapeless.{::, Generic, HNil}
 
+case class Event(ts: Long, msg: String)
 
 class ConverterSuite extends FunSuite with Matchers {
 
@@ -39,8 +41,6 @@ class ConverterSuite extends FunSuite with Matchers {
     conv.to("test" :: 1 :: HNil) should contain theSameElementsInOrderAs (Seq("\"test\"","1"))
     conv.from(Seq("foo","2")) should be ("foo" :: 2 :: HNil)
   }
-
-  case class Event(ts: Long, msg: String)
 
   test("conversion case class <-> String works") {
     val conv = RawFieldsConverter[Event]
@@ -74,5 +74,13 @@ class ConverterSuite extends FunSuite with Matchers {
     val event = new Event2(1,"foo")
     val expectedEvent = new Event2(1, "\"foo\"")
     conv.from(conv.to(event)) should be (expectedEvent)
+  }
+
+  test("serializing a RawFieldsConverter should work") {
+    val conv = RawFieldsConverter[Event]
+    val convDeserialized = serializeAndDeserialize(conv)
+
+    convDeserialized.to(Event(1,"foobar")) should contain theSameElementsInOrderAs(Seq("1","\"foobar\""))
+    convDeserialized.from(Seq("2","barfoo")) should be (Event(2,"barfoo"))
   }
 }
