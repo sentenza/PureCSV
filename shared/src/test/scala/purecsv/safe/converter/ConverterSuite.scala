@@ -15,10 +15,12 @@
 package purecsv.safe.converter
 
 import org.scalatest.{FunSuite, Matchers}
+import purecsv.util.serializeAndDeserialize
 import shapeless.{::, Generic, HNil}
 
 import scala.util.Success
 
+case class Event(ts: Long, msg: String, user: Option[Int])
 
 class ConverterSuite extends FunSuite with Matchers {
 
@@ -41,8 +43,6 @@ class ConverterSuite extends FunSuite with Matchers {
     val conv = RawFieldsConverter[String :: Int :: HNil]
     conv.tryFrom(Seq("foo","2")) should be (Success("foo" :: 2 :: HNil))
   }
-
-  case class Event(ts: Long, msg: String, user: Option[Int])
 
   test("conversion String -> case class works") {
     val conv = RawFieldsConverter[Event]
@@ -75,5 +75,13 @@ class ConverterSuite extends FunSuite with Matchers {
     val event = new Event2(1,"foo")
     val expectedEvent = new Event2(1, "\"foo\"")
     conv.tryFrom(conv.to(event)) should be (Success(expectedEvent))
+  }
+
+  test("serializing a RawFieldsConverter should work") {
+    val conv = RawFieldsConverter[Event]
+    val convDeserialized = serializeAndDeserialize(conv)
+
+    convDeserialized.tryFrom(Seq("2","barfoo","")) should be (Success(Event(2,"barfoo",None)))
+    convDeserialized.tryFrom(Seq("2","barfoo","1")) should be (Success(Event(2,"barfoo",Some(1))))
   }
 }

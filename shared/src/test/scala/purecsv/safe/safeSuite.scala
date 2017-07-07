@@ -19,14 +19,16 @@ import java.nio.file.Files
 
 import purecsv.safe._
 import purecsv.safe.tryutil._
+import purecsv.util.serializeAndDeserialize
+
 import org.scalatest.{Matchers, FunSuite}
 
 import scala.util.Success
 
+case class Event(ts: Long, msg: String, user: Option[Int])
 
 class safeSuite extends FunSuite with Matchers {
 
-  case class Event(ts: Long, msg: String, user: Option[Int])
   val events = Seq(Event(1,"foo",None),Event(2,"bar",Some(1)))
   val rawEvents = Seq("1,\"foo\",","2,\"bar\",1")
 
@@ -51,6 +53,18 @@ class safeSuite extends FunSuite with Matchers {
     val file = Files.createTempFile("casecsv",".csv").toFile
     events.writeCSVToFile(file)
     CSVReader[Event].readCSVFromFile(file) should contain theSameElementsInOrderAs(events.map(Success(_)))
+  }
+
+  test("serializing a CSVReader should work") {
+    val csvReader = CSVReader[Event]
+    val csvReaderDeserialized = serializeAndDeserialize(csvReader)
+
+    val result = csvReaderDeserialized.readCSVFromString("123|bar|\n456|foo|3", '|', false)
+
+    result.length should be (2)
+    result should be (List(
+      Success(Event(123, "bar", None)),
+      Success(Event(456, "foo", Some(3)))))
   }
 
 }

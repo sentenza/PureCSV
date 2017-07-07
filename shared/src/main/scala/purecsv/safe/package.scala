@@ -57,7 +57,7 @@ package object safe {
   implicit class CSVIterable[A](iter: Iterable[A])(implicit rfc: RawFieldsConverter[A])
     extends purecsv.csviterable.CSVIterable[A, RawFieldsConverter[A]](iter)(rfc)
 
-  trait CSVReader[A] {
+  trait CSVReader[A] extends Serializable {
 
     def rfc: RawFieldsConverter[A]
 
