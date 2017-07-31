@@ -30,7 +30,7 @@ the project libraryDependencies:
 ```scala
 resolvers += Resolver.sonatypeRepo("releases")
 
-libraryDependencies += "com.github.melrief" %% "purecsv" % "0.0.9"
+libraryDependencies += "com.github.melrief" %% "purecsv" % "0.1.0"
 ```
 
 The library works for both Scala 2.11.x and 2.12.x.
@@ -145,7 +145,7 @@ successfully while record 2 and 4 were not.
 PureCSV has been designed with flexibility and extensibility in mind. It is possible
 to add new field types as well as change the way standard types are read
 from String. It is also possible to change the way CSV is parsed, right now it
-uses [OpencSV](http://opencsv.sourceforge.net/), and, more deeply, it is possible
+uses [OpenCSV](http://opencsv.sourceforge.net/), and, more deeply, it is possible
 to work with different raw data than String, such as binary data.
 
 ### Add new field types ###
@@ -154,7 +154,7 @@ to work with different raw data than String, such as binary data.
 possible to convert their values from/to `String`. To add a new type `A`, you have
 to supply a `purecsv.safe.converter.StringConverter[A]`.
 You can have a look at the
-[defaults string converters](https://github.com/melrief/PureCSV/blob/master/src/main/scala/purecsv/safe/converter/defaults/string/package.scala)
+[defaults string converters](https://github.com/melrief/PureCSV/blob/master/shared/src/main/scala/purecsv/safe/converter/defaults/string/package.scala)
 to see how this is done for primitive types.
 For completeness, we can do an example showing how to create a `StringConverter`
 for non-trivial types, like [ISO 8601 for dates](http://en.wikipedia.org/wiki/ISO_8601).
@@ -167,14 +167,14 @@ structure where to store datetimes as well as the parsers. We can add our
 
 ```scala
 implicit val dateTimeStringConverter = new StringConverter[DateTime] {
-    override def tryFrom(str: String): Try[DateTime] = {
-      Try(ISODateTimeFormat.dateTimeParser().parseDateTime(str))
-    }
-
-    override def to(dateTime: DateTime): String = {
-      ISODateTimeFormat.dateTime().print(dateTime)
-    }
+  override def tryFrom(str: String): Try[DateTime] = {
+    Try(ISODateTimeFormat.dateTimeParser().parseDateTime(str))
   }
+
+  override def to(dateTime: DateTime): String = {
+    ISODateTimeFormat.dateTime().print(dateTime)
+  }
+}
 ```
 
 After importing this converter, PureCSV will be able to read `DateTime` fields.
