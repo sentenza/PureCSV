@@ -14,6 +14,8 @@
  */
 package purecsv.unsafe.converter.defaults
 
+import java.util.UUID
+
 import purecsv.unsafe.converter.StringConverterUtils
 
 package object string {
@@ -39,6 +41,7 @@ package object string {
   implicit val intc:    StringConverter[Int]     = mkStringConverter(_.toInt,_.toString)
   implicit val longc:   StringConverter[Long]    = mkStringConverter(_.toLong,_.toString)
   implicit val shortc:  StringConverter[Short]   = mkStringConverter(_.toShort,_.toString)
+  implicit val uuidc:   StringConverter[UUID]    = mkStringConverter(UUID.fromString,_.toString)
   implicit val stringc: StringConverter[String]  = new StringConverter[String] {
     override def from(s: String): String = s
     override def to(s: String): String = "\"" + s.replaceAllLiterally("\"", "\"\"") + "\""
