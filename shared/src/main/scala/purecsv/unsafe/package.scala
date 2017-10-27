@@ -92,7 +92,7 @@ package object unsafe {
     def readCSVFromFileName(fileName: String,
                             skipHeader: Boolean = false,
                             delimiter:Char = RecordSplitter.defaultFieldSeparator): List[A] = {
-      readCSVFromFile(new File(fileName), skipHeader)
+      readCSVFromFile(new File(fileName), skipHeader, delimiter)
     }
 
   }
