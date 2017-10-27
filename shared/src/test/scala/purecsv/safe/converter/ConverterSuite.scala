@@ -14,10 +14,12 @@
  */
 package purecsv.safe.converter
 
+import java.util.UUID
+
 import org.scalatest.{FunSuite, Matchers}
+import purecsv.safe.converter.defaults.string._
 import purecsv.util.serializeAndDeserialize
 import shapeless.{::, Generic, HNil}
-
 import scala.util.Success
 
 case class Event(ts: Long, msg: String, user: Option[Int])
@@ -28,6 +30,13 @@ class ConverterSuite extends FunSuite with Matchers {
     StringConverter[Boolean].tryFrom("false") should be (Success(false))
     StringConverter[Boolean].tryFrom("1") should be (Success(true))
     StringConverter[Boolean].tryFrom("TRUE") should be (Success(true))
+  }
+
+  test("conversion String <-> Try[UUID] works") {
+    val uuid = UUID.randomUUID()
+    StringConverter[UUID].tryFrom(uuid.toString) should be (Success(uuid))
+    StringConverter[UUID].tryFrom(uuid.toString.toLowerCase) should be (Success(uuid))
+    StringConverter[UUID].tryFrom(uuid.toString.toUpperCase) should be (Success(uuid))
   }
 
   test("conversion string -> Try[Option[Int]] works") {

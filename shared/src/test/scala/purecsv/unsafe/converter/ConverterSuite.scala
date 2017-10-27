@@ -14,6 +14,8 @@
  */
 package purecsv.unsafe.converter
 
+import java.util.UUID
+
 import purecsv.unsafe.converter.defaults.rawfields._
 import purecsv.unsafe.converter.defaults.string._
 import purecsv.util.serializeAndDeserialize
@@ -29,6 +31,14 @@ class ConverterSuite extends FunSuite with Matchers {
     StringConverter[Boolean].from("false") should be (false)
     StringConverter[Boolean].from("1") should be (true)
     StringConverter[Boolean].from("TRUE") should be (true)
+  }
+
+  test("conversion String <-> UUID works") {
+    val uuid = UUID.randomUUID()
+    StringConverter[UUID].to(uuid) should be (uuid.toString)
+    StringConverter[UUID].from(uuid.toString) should be (uuid)
+    StringConverter[UUID].from(uuid.toString.toLowerCase) should be (uuid)
+    StringConverter[UUID].from(uuid.toString.toUpperCase) should be (uuid)
   }
 
   test("conversion HNil <-> String works") {
