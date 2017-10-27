@@ -3,7 +3,7 @@
   *
   * @see http://www.scala-js.org/
   */
-addSbtPlugin("org.scala-js" % "sbt-scalajs" % "0.6.14")
+addSbtPlugin("org.scala-js" % "sbt-scalajs" % "0.6.20")
 
 /**
   * coursier
@@ -11,7 +11,7 @@ addSbtPlugin("org.scala-js" % "sbt-scalajs" % "0.6.14")
   * better ivy alternative for dependency resolution
   * @see https://github.com/alexarchambault/coursier
   */
-addSbtPlugin("io.get-coursier" % "sbt-coursier" % "1.0.0-M15-1")
+addSbtPlugin("io.get-coursier" % "sbt-coursier" % "1.0.0-RC12")
 
 /**
   * sbt-updates
@@ -19,4 +19,6 @@ addSbtPlugin("io.get-coursier" % "sbt-coursier" % "1.0.0-M15-1")
   * for easier dependency updates monitoring
   * @see https://github.com/rtimush/sbt-updates
   */
-addSbtPlugin("com.timushev.sbt" % "sbt-updates" % "0.3.0")
+addSbtPlugin("com.timushev.sbt" % "sbt-updates" % "0.3.3")
+
+addSbtPlugin("com.jsuereth" % "sbt-pgp" % "1.1.0")

@@ -9,13 +9,11 @@ lazy val buildSettings = Seq(
 lazy val publishSettings = Seq(
   publishMavenStyle := true,
   publishArtifact in Test := false,
-  publishTo <<= version { v: String =>
-    val nexus = "https://oss.sonatype.org/"
-    if (v.trim.endsWith("SNAPSHOT"))
-      Some("snapshots" at nexus + "content/repositories/snapshots")
-      else
-        Some("releases" at nexus + "service/local/staging/deploy/maven2")
-    },
+  publishTo := Some(
+    if (isSnapshot.value)
+      Opts.resolver.sonatypeSnapshots
+    else
+      Opts.resolver.sonatypeStaging),
     pomIncludeRepository := { x => false },
     pomExtra := (
     <url>https://github.com/melrief/PureCSV</url>
@@ -40,8 +38,8 @@ lazy val publishSettings = Seq(
 )
 
 lazy val noPublishSettings = Seq(
-  publish := (),
-  publishLocal := (),
+  publish := { },
+  publishLocal := { },
   publishArtifact := false
 )
 
@@ -63,8 +61,7 @@ lazy val pureCSV = crossProject.crossType(CrossType.Full).in(new File(".")).
       "com.chuusai" %% "shapeless" % "2.3.2",
       compilerPlugin("org.scalamacros" % "paradise" % "2.1.0" cross CrossVersion.full),
       "org.scalatest" %% "scalatest" % "3.0.1" % Test,
-      "com.github.marklister" %%% "product-collections" % "1.4.5",
-      "org.scala-lang.modules" %% "scala-parser-combinators" % "1.0.6"
+      "com.github.marklister" %%% "product-collections" % "1.4.5"
     ),
     resolvers ++= Seq(
       Resolver.sonatypeRepo("releases"),
