@@ -2,8 +2,8 @@ import sbt.Keys._
 
 lazy val buildSettings = Seq(
   organization := "com.github.melrief",
-  scalaVersion := "2.12.1",
-  crossScalaVersions := Seq("2.10.5", "2.11.8", "2.12.1")
+  scalaVersion := "2.12.7",
+  crossScalaVersions := Seq("2.10.5", "2.11.8", scalaVersion.value)
 )
 
 lazy val publishSettings = Seq(
@@ -69,7 +69,7 @@ lazy val pureCSV = crossProject.crossType(CrossType.Full).in(new File(".")).
     )
   ).
   jvmSettings(
-    libraryDependencies += "net.sf.opencsv" % "opencsv" % "2.3"
+    libraryDependencies += "com.opencsv" % "opencsv" % "4.2"
   ).
   jsSettings(
   )
