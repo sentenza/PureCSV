@@ -2,7 +2,7 @@ import sbt.Keys._
 
 lazy val buildSettings = Seq(
   organization := "com.github.melrief",
-  scalaVersion := "2.12.7",
+  scalaVersion := "2.12.8",
   crossScalaVersions := Seq("2.10.5", "2.11.8", scalaVersion.value)
 )
 
@@ -54,13 +54,13 @@ lazy val pureCSV = crossProject.crossType(CrossType.Full).in(new File(".")).
   settings(publishSettings).
   settings(
     name := "purecsv",
-    version := "0.1.1",
+    version := "0.1.2-SNAPSHOT",
     javacOptions ++= Seq("-source", "1.8", "-target", "1.8"),
     scalacOptions ++= Seq("-feature", "-deprecation"),
     libraryDependencies ++= Seq(
       "com.chuusai" %% "shapeless" % "2.3.2",
       compilerPlugin("org.scalamacros" % "paradise" % "2.1.0" cross CrossVersion.full),
-      "org.scalatest" %% "scalatest" % "3.0.1" % Test,
+      "org.scalatest" %% "scalatest" % "3.0.5" % Test,
       "com.github.marklister" %%% "product-collections" % "1.4.5"
     ),
     resolvers ++= Seq(
