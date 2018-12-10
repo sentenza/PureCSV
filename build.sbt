@@ -58,9 +58,9 @@ lazy val pureCSV = crossProject.crossType(CrossType.Full).in(new File(".")).
     javacOptions ++= Seq("-source", "1.8", "-target", "1.8"),
     scalacOptions ++= Seq("-feature", "-deprecation"),
     libraryDependencies ++= Seq(
-      "com.chuusai" %% "shapeless" % "2.3.2",
+      "com.chuusai" %% "shapeless" % "2.3.3",
       compilerPlugin("org.scalamacros" % "paradise" % "2.1.0" cross CrossVersion.full),
-      "org.scalatest" %% "scalatest" % "3.0.5" % Test,
+      "org.scalatest" %% "scalatest" % "3.0.6-SNAP4" % Test,
       "com.github.marklister" %%% "product-collections" % "1.4.5"
     ),
     resolvers ++= Seq(
