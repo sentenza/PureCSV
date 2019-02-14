@@ -2,15 +2,6 @@ sudo: false
 
 language: scala
 
-## Scala-JS 0.6.13 and later uses NodeJS instead of Rhino to run Scala-JS tests
-# here we configure NodeJS environment
-install:
-  - . $HOME/.nvm/nvm.sh
-  - nvm install stable
-  - nvm use stable
-  - npm install
-  - npm install jsdom
-
 jdk:
   - oraclejdk8
 

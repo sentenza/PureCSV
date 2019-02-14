@@ -44,7 +44,7 @@ lazy val noPublishSettings = Seq(
 )
 
 lazy val root = project.in(file(".")).
-  aggregate(pureCSVJVM, pureCSVJS).
+  aggregate(pureCSVJVM).
   settings(buildSettings).
   settings(publishSettings).
   settings(noPublishSettings)
@@ -69,7 +69,7 @@ lazy val pureCSV = crossProject.crossType(CrossType.Full).in(new File(".")).
     )
   ).
   jvmSettings(
-    libraryDependencies += "net.sf.opencsv" % "opencsv" % "2.3"
+    libraryDependencies += "com.opencsv" % "opencsv" % "4.2"
   ).
   jsSettings(
   )
