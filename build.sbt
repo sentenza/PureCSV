@@ -44,7 +44,7 @@ lazy val noPublishSettings = Seq(
 )
 
 lazy val root = project.in(file(".")).
-  aggregate(pureCSVJVM).
+  aggregate(pureCSVJVM, pureCSVJS).
   settings(buildSettings).
   settings(publishSettings).
   settings(noPublishSettings)
