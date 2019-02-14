@@ -54,7 +54,7 @@ lazy val pureCSV = crossProject.crossType(CrossType.Full).in(new File(".")).
   settings(publishSettings).
   settings(
     name := "purecsv",
-    version := "0.1.1",
+    version := "0.2.0-SNAPSHOT",
     javacOptions ++= Seq("-source", "1.8", "-target", "1.8"),
     scalacOptions ++= Seq("-feature", "-deprecation"),
     libraryDependencies ++= Seq(
