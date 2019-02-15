@@ -1,7 +1,7 @@
 # PureCSV #
 
 [![Build Status](https://travis-ci.org/kontainers/PureCSV.svg?branch=master)](https://travis-ci.org/kontainers/PureCSV)
-[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.github.melrief/purecsv_2.11/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.github.melrief/purecsv_2.11)
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/io.kontainers/purecsv_2.12/badge.svg)](https://maven-badges.herokuapp.com/maven-central/io.kontainers/purecsv_2.12)
 
 PureCSV is a Scala library for working with the CSV format. The
 library gets rid of most of the boilerplate required to work with CSV
@@ -30,7 +30,7 @@ the project libraryDependencies:
 ```scala
 resolvers += Resolver.sonatypeRepo("releases")
 
-libraryDependencies += "com.github.melrief" %% "purecsv" % "0.1.1"
+libraryDependencies += "io.kontainers" %% "purecsv" % "0.2.0"
 ```
 
 The library works for both Scala 2.11.x and 2.12.x.
@@ -154,7 +154,7 @@ to work with different raw data than String, such as binary data.
 possible to convert their values from/to `String`. To add a new type `A`, you have
 to supply a `purecsv.safe.converter.StringConverter[A]`.
 You can have a look at the
-[defaults string converters](https://github.com/melrief/PureCSV/blob/master/shared/src/main/scala/purecsv/safe/converter/defaults/string/package.scala)
+[defaults string converters](https://github.com/kontainers/PureCSV/blob/master/shared/src/main/scala/purecsv/safe/converter/defaults/string/package.scala)
 to see how this is done for primitive types.
 For completeness, we can do an example showing how to create a `StringConverter`
 for non-trivial types, like [ISO 8601 for dates](http://en.wikipedia.org/wiki/ISO_8601).
