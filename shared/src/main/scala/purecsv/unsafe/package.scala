@@ -16,6 +16,8 @@ package purecsv
 
 import java.io._
 
+import purecsv.safe.converter.defaults.string.Trimming
+import purecsv.safe.converter.defaults.string.Trimming.NoAction
 import purecsv.unsafe.converter.{RawFieldsConverter, StringConverter}
 import shapeless.{::, Generic, HList, HNil}
 
@@ -60,14 +62,15 @@ package object unsafe {
 
     def readCSVFromReader(r: Reader,
                           delimiter:Char = RecordSplitter.defaultFieldSeparator,
-                          skipHeader: Boolean = false
+                          skipHeader: Boolean = false,
+                          trimming: Trimming = NoAction
                           ): Iterator[A] = {
       val records = if (skipHeader) {
         RecordSplitterImpl.getRecordsSkipHeader(r, delimiter)
       } else {
         RecordSplitterImpl.getRecords(r, delimiter)
       }
-      records.map(record => rfc.from(record.toSeq))
+      records.map(record => rfc.from(record.toSeq, trimming))
     }
 
     def readCSVFromString(s: String,

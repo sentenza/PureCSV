@@ -20,6 +20,7 @@ import purecsv.unsafe.converter.defaults.rawfields._
 import purecsv.unsafe.converter.defaults.string._
 import purecsv.util.serializeAndDeserialize
 import org.scalatest.{FunSuite, Matchers}
+import purecsv.safe.converter.defaults.string.Trimming.NoAction
 import shapeless.{::, Generic, HNil}
 
 case class Event(ts: Long, msg: String)
@@ -28,34 +29,34 @@ class ConverterSuite extends FunSuite with Matchers {
 
   test("conversion String <-> Boolean works") {
     StringConverter[Boolean].to(true) should be ("true")
-    StringConverter[Boolean].from("false") should be (false)
-    StringConverter[Boolean].from("1") should be (true)
-    StringConverter[Boolean].from("TRUE") should be (true)
+    StringConverter[Boolean].from("false", NoAction) should be (false)
+    StringConverter[Boolean].from("1", NoAction) should be (true)
+    StringConverter[Boolean].from("TRUE", NoAction) should be (true)
   }
 
   test("conversion String <-> UUID works") {
     val uuid = UUID.randomUUID()
     StringConverter[UUID].to(uuid) should be (uuid.toString)
-    StringConverter[UUID].from(uuid.toString) should be (uuid)
-    StringConverter[UUID].from(uuid.toString.toLowerCase) should be (uuid)
-    StringConverter[UUID].from(uuid.toString.toUpperCase) should be (uuid)
+    StringConverter[UUID].from(uuid.toString, NoAction) should be (uuid)
+    StringConverter[UUID].from(uuid.toString.toLowerCase, NoAction) should be (uuid)
+    StringConverter[UUID].from(uuid.toString.toUpperCase, NoAction) should be (uuid)
   }
 
   test("conversion HNil <-> String works") {
     RawFieldsConverter[HNil].to(HNil) should contain theSameElementsInOrderAs  (Seq.empty)
-    RawFieldsConverter[HNil].from(Seq.empty) should be (HNil)
+    RawFieldsConverter[HNil].from(Seq.empty, NoAction) should be (HNil)
   }
 
   test("conversion HList <-> String works") {
     val conv = RawFieldsConverter[String :: Int :: HNil]
     conv.to("test" :: 1 :: HNil) should contain theSameElementsInOrderAs (Seq("\"test\"","1"))
-    conv.from(Seq("foo","2")) should be ("foo" :: 2 :: HNil)
+    conv.from(Seq("foo","2"), NoAction) should be ("foo" :: 2 :: HNil)
   }
 
   test("conversion case class <-> String works") {
     val conv = RawFieldsConverter[Event]
     conv.to(Event(1,"foobar")) should contain theSameElementsInOrderAs(Seq("1","\"foobar\""))
-    conv.from(Seq("2","barfoo")) should be (Event(2,"barfoo"))
+    conv.from(Seq("2","barfoo"), NoAction) should be (Event(2,"barfoo"))
   }
 
   class Event2(val ts: Long, var msg: String) {
@@ -78,12 +79,12 @@ class ConverterSuite extends FunSuite with Matchers {
   test("conversion class with custom Generic <-> String works") {
     val conv = RawFieldsConverter[Event2]
     conv.to(new Event2(1,"foo")) should contain theSameElementsInOrderAs(Seq("1","\"foo\""))
-    conv.from(Seq("2","bar")) should be (new Event2(2,"bar"))
+    conv.from(Seq("2","bar"), NoAction) should be (new Event2(2,"bar"))
 
     // Strings are quoted
     val event = new Event2(1,"foo")
     val expectedEvent = new Event2(1, "\"foo\"")
-    conv.from(conv.to(event)) should be (expectedEvent)
+    conv.from(conv.to(event), NoAction) should be (expectedEvent)
   }
 
   test("serializing a RawFieldsConverter should work") {
@@ -91,6 +92,6 @@ class ConverterSuite extends FunSuite with Matchers {
     val convDeserialized = serializeAndDeserialize(conv)
 
     convDeserialized.to(Event(1,"foobar")) should contain theSameElementsInOrderAs(Seq("1","\"foobar\""))
-    convDeserialized.from(Seq("2","barfoo")) should be (Event(2,"barfoo"))
+    convDeserialized.from(Seq("2","barfoo"), NoAction) should be (Event(2,"barfoo"))
   }
 }

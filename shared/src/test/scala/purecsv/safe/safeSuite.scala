@@ -20,8 +20,8 @@ import java.nio.file.Files
 import purecsv.safe._
 import purecsv.safe.tryutil._
 import purecsv.util.serializeAndDeserialize
-
-import org.scalatest.{Matchers, FunSuite}
+import org.scalatest.{FunSuite, Matchers}
+import purecsv.safe.converter.defaults.string.Trimming.NoAction
 
 import scala.util.Success
 
@@ -59,7 +59,7 @@ class safeSuite extends FunSuite with Matchers {
     val csvReader = CSVReader[Event]
     val csvReaderDeserialized = serializeAndDeserialize(csvReader)
 
-    val result = csvReaderDeserialized.readCSVFromString("123|bar|\n456|foo|3", '|', false)
+    val result = csvReaderDeserialized.readCSVFromString("123|bar|\n456|foo|3", '|', NoAction, false)
 
     result.length should be (2)
     result should be (List(

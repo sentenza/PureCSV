@@ -16,20 +16,25 @@ package purecsv.safe.converter
 
 import java.util.UUID
 
-import org.scalatest.{FunSuite, Matchers}
+import org.scalatest.{FunSuite, Matchers, TryValues}
+import purecsv.safe.converter.defaults.string.Trimming.{TrimAll, TrimEmpty}
 import purecsv.safe.converter.defaults.string._
 import purecsv.util.serializeAndDeserialize
 import shapeless.{::, Generic, HNil}
-import scala.util.Success
+
+import scala.util.{Failure, Success}
 
 case class Event(ts: Long, msg: String, user: Option[Int])
 
-class ConverterSuite extends FunSuite with Matchers {
+class ConverterSuite extends FunSuite with Matchers with TryValues {
 
   test("conversion String -> Try[Boolean] works") {
     StringConverter[Boolean].tryFrom("false") should be (Success(false))
     StringConverter[Boolean].tryFrom("1") should be (Success(true))
     StringConverter[Boolean].tryFrom("TRUE") should be (Success(true))
+    StringConverter[Boolean].tryFrom("   TRUE   ", TrimAll) should be (Success(true))
+    StringConverter[Boolean].tryFrom("TRUE", TrimEmpty) should be (Success(true))
+    StringConverter[Boolean].tryFrom("    ", TrimEmpty).failure.exception shouldBe an [IllegalArgumentException]
   }
 
   test("conversion String <-> Try[UUID] works") {
@@ -37,11 +42,14 @@ class ConverterSuite extends FunSuite with Matchers {
     StringConverter[UUID].tryFrom(uuid.toString) should be (Success(uuid))
     StringConverter[UUID].tryFrom(uuid.toString.toLowerCase) should be (Success(uuid))
     StringConverter[UUID].tryFrom(uuid.toString.toUpperCase) should be (Success(uuid))
+    StringConverter[UUID].tryFrom(s"   ${uuid.toString}   ", TrimAll) should be (Success(uuid))
   }
 
   test("conversion string -> Try[Option[Int]] works") {
     StringConverter[Option[Int]].tryFrom("") should be (Success(None))
     StringConverter[Option[Int]].tryFrom("1") should be (Success(Some(1)))
+    StringConverter[Option[Int]].tryFrom("   1   ", TrimAll) should be (Success(Some(1)))
+    StringConverter[Option[Int]].tryFrom("     ", TrimEmpty) should be (Success(None))
   }
 
   test("conversion String -> HNil works") {
@@ -57,6 +65,8 @@ class ConverterSuite extends FunSuite with Matchers {
     val conv = RawFieldsConverter[Event]
     conv.tryFrom(Seq("2","barfoo","")) should be (Success(Event(2,"barfoo",None)))
     conv.tryFrom(Seq("2","barfoo","1")) should be (Success(Event(2,"barfoo",Some(1))))
+    conv.tryFrom(Seq(" 2 ", " barfoo", "1 "), TrimAll) should be (Success(Event(2, "barfoo", Some(1))))
+    conv.tryFrom(Seq("2", "barfoo", "   "), TrimEmpty) should be (Success(Event(2, "barfoo", None)))
   }
 
   class Event2(val ts: Long, var msg: String) {
