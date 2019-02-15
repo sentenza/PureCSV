@@ -1,9 +1,9 @@
 import sbt.Keys._
 
 lazy val buildSettings = Seq(
-  organization := "com.github.melrief",
+  organization := "io.kontainers",
   scalaVersion := "2.12.8",
-  crossScalaVersions := Seq("2.10.6", "2.11.12", scalaVersion.value)
+  crossScalaVersions := Seq("2.11.12", scalaVersion.value)
 )
 
 lazy val publishSettings = Seq(
@@ -16,7 +16,7 @@ lazy val publishSettings = Seq(
       Opts.resolver.sonatypeStaging),
     pomIncludeRepository := { x => false },
     pomExtra := (
-    <url>https://github.com/melrief/PureCSV</url>
+    <url>https://github.com/kontainers/PureCSV</url>
       <licenses>
         <license>
           <name>Apache2</name>
@@ -26,7 +26,7 @@ lazy val publishSettings = Seq(
       </licenses>
       <scm>
         <url>git@github.com:melrief/PureCSV.git</url>
-        <connection>scm:git:git@github.com:melrief/PureCSV.git</connection>
+        <connection>scm:git:git@github.com:kontainers/PureCSV.git</connection>
       </scm>
       <developers>
         <developer>
@@ -69,7 +69,7 @@ lazy val pureCSV = crossProject.crossType(CrossType.Full).in(new File(".")).
     )
   ).
   jvmSettings(
-    libraryDependencies += "com.opencsv" % "opencsv" % "4.2"
+    libraryDependencies += "com.opencsv" % "opencsv" % "4.5"
   ).
   jsSettings(
   )
