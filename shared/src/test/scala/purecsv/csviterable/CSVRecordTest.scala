@@ -28,13 +28,11 @@ class CSVRecordTest extends FunSuite with Matchers {
   test("CSVRecord output should be parsable by purecsv") {
     implicit val rfc = RawFieldsConverter[Person]
     val csvRecord = CSVRecord(person).toCSV()
-    println(s"csvRecord: $csvRecord")
     CSVReader[Person].readCSVFromString(csvRecord) should contain theSameElementsAs Seq(person)
   }
   test("CSVRecord output should be parsable by purecsv (trimming applied)") {
     implicit val rfc = RawFieldsConverter[Person]
-    val csvRecord = """Jon, Snow "III" of Winterfell """
-    println(s"csvRecord: $csvRecord")
+    val csvRecord = """Jon,"Snow ""III"" of Winterfell """"
     CSVReader[Person].readCSVFromString(csvRecord, trimming = Trimming.TrimAll) should contain theSameElementsAs Seq(person)
   }
 }
