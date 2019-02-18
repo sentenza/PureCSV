@@ -144,9 +144,7 @@ successfully while record 2 and 4 were not.
 
 PureCSV has been designed with flexibility and extensibility in mind. It is possible
 to add new field types as well as change the way standard types are read
-from String. It is also possible to change the way CSV is parsed, right now it
-uses [OpenCSV](http://opencsv.sourceforge.net/), and, more deeply, it is possible
-to work with different raw data than String, such as binary data.
+from String. It is also possible to change the way CSV is parsed.
 
 ### Add new field types ###
 
