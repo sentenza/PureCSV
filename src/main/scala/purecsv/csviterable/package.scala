@@ -59,7 +59,7 @@ package object csviterable {
 
     /** @see [[writeCSVTo]] */
     def writeCSVToFile(file: File, sep: String = defaultFieldSeparatorStr, header: Option[Seq[String]] = None): Unit = {
-      val writer = new PrintWriter(file)
+      val writer = new PrintWriter(file, "utf-8")
       try {
         this.writeCSVTo(writer, sep, header)
       } finally {
