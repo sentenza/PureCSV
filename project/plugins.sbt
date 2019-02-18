@@ -1,11 +1,4 @@
 /**
-  * ScalaJS sbt plugin
-  *
-  * @see http://www.scala-js.org/
-  */
-addSbtPlugin("org.scala-js" % "sbt-scalajs" % "0.6.25")
-
-/**
   * coursier
   *
   * better ivy alternative for dependency resolution
