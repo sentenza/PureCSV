@@ -14,9 +14,6 @@
  */
 package purecsv.safe.converter
 
-import purecsv.safe.converter.defaults.string.Trimming
-import purecsv.safe.converter.defaults.string.Trimming.NoAction
-
 import scala.util.{Failure, Success, Try}
 
 
@@ -32,8 +29,8 @@ trait Converter[A,B] extends purecsv.unsafe.converter.Converter[A,B] {
    * @return A value of type [[A]] wrapped in [[Success]] if the conversion is successful else [[Failure]] with the
    *         error
    */
-  def tryFrom(b: B, trimming: Trimming = NoAction): Try[A]
-  final override def from(b: B, trimming: Trimming): A = tryFrom(b, trimming) match {
+  def tryFrom(b: B): Try[A]
+  final override def from(b: B): A = tryFrom(b) match {
     case Success(a) => a
     case Failure(f) => throw new IllegalArgumentException(s"'$b' cannot be converted because: $f")
   }
@@ -47,8 +44,8 @@ object StringConverter {
 }
 
 object StringConverterUtils {
-  def mkStringConverter[A](fromF: (String, Trimming) => Try[A], toF: A => String) = new StringConverter[A] {
-    def tryFrom(s: String, trimming: Trimming = NoAction): Try[A] = fromF(s, trimming)
+  def mkStringConverter[A](fromF: String => Try[A], toF: A => String) = new StringConverter[A] {
+    def tryFrom(s: String): Try[A] = fromF(s)
     def to(a: A): String = toF(a)
   }
 }

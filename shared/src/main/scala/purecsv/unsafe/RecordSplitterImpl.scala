@@ -16,6 +16,8 @@ package purecsv.unsafe
 
 import java.io.Reader
 
+import purecsv.safe.converter.defaults.string.Trimming
+
 
 /**
  * A [[purecsv.unsafe.RecordSplitter]] that uses the OpenCSV library for extracting records from a [[Reader]]
@@ -25,8 +27,10 @@ object RecordSplitterImpl extends RecordSplitter[Reader] {
   override def getRecords(reader: Reader,
                           fieldSep: Char,
                           quoteChar: Char,
-                          firstLine: Int): Iterator[Array[String]] = {
+                          firstLine: Int,
+                          trimming: Trimming): Iterator[Array[String]] = {
     val csvReader = new com.github.marklister.collections.io.CSVReader(reader, fieldSep, quoteChar, firstLine)
-    csvReader.filter(array => array.size != 1 || array(0) != "") // skip empty lines
+    val mappedReader = csvReader.map(line => line.map(trimming.trim(_)))
+    mappedReader.filter(array => array.size != 1 || array(0) != "") // skip empty lines
   }
 }

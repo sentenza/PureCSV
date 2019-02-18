@@ -15,7 +15,6 @@
 package purecsv.safe.converter.defaults
 
 import purecsv.safe.converter.StringConverter
-import purecsv.safe.converter.defaults.string.Trimming
 import shapeless.{::, Generic, HList, HNil}
 
 import scala.util.{Failure, Success, Try}
@@ -30,9 +29,9 @@ package object rawfields {
   }
 
   implicit val deriveHNil = new RawFieldsConverter[HNil] {
-    override def tryFrom(s: Seq[String], trimming: Trimming): Try[HNil] = s match {
+    override def tryFrom(s: Seq[String]): Try[HNil] = s match {
       case Nil => Success(HNil)
-      case _       => illegalConversion(s.mkString("[",", ","]"), "HNil")
+      case _   => illegalConversion(s.mkString("[",", ","]"), "HNil")
     }
     override def to(a: HNil): Seq[String] = Seq.empty
   }
@@ -41,11 +40,11 @@ package object rawfields {
                           (implicit sc:  StringConverter[V],
                                    fto: RawFieldsConverter[T])
                                       : RawFieldsConverter[V :: T] = new RawFieldsConverter[V :: T] {
-    override def tryFrom(s: Seq[String], trimming: Trimming): Try[V :: T] = s match {
+    override def tryFrom(s: Seq[String]): Try[V :: T] = s match {
       case Nil => illegalConversion("", classOf[V :: T].toString)
       case _   => for {
-        head <- sc.tryFrom(s.head, trimming)
-        tail <- fto.tryFrom(s.tail, trimming)
+        head <- sc.tryFrom(s.head)
+        tail <- fto.tryFrom(s.tail)
       } yield head :: tail
     }
 
@@ -55,7 +54,7 @@ package object rawfields {
   implicit def deriveClass[A, R](implicit gen: Generic.Aux[A, R],
                                          conv: RawFieldsConverter[R])
                                              : RawFieldsConverter[A] = new RawFieldsConverter[A] {
-    override def tryFrom(s: Seq[String], trimming: Trimming): Try[A] = conv.tryFrom(s, trimming).map(gen.from)
+    override def tryFrom(s: Seq[String]): Try[A] = conv.tryFrom(s).map(gen.from)
     override def to(a: A): Seq[String] = conv.to(gen.to(a))
   }
 }

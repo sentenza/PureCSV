@@ -60,8 +60,11 @@ package object csviterable {
     /** @see [[writeCSVTo]] */
     def writeCSVToFile(file: File, sep: String = defaultFieldSeparatorStr, header: Option[Seq[String]] = None): Unit = {
       val writer = new PrintWriter(file)
-      this.writeCSVTo(writer, sep, header)
-      writer.close()
+      try {
+        this.writeCSVTo(writer, sep, header)
+      } finally {
+        writer.close()
+      }
     }
 
     /** @see [[writeCSVToFile(File,String,Option[Seq[String]]):Unit*]] */

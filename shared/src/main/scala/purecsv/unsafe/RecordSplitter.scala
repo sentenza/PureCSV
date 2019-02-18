@@ -14,7 +14,7 @@
  */
 package purecsv.unsafe
 
-import java.io.Reader
+import purecsv.safe.converter.defaults.string.Trimming
 
 
 object RecordSplitter {
@@ -27,16 +27,17 @@ object RecordSplitter {
 trait RecordSplitter[R] {
 
   /** Split the input [[R]] into records, where each record is a sequence of raw fields */
-  def getRecords(r: R, fieldSep: Char, quoteChar: Char, firstLine: Int): Iterator[Array[String]]
+  def getRecords(r: R, fieldSep: Char, quoteChar: Char, firstLine: Int, trimming: Trimming): Iterator[Array[String]]
 
   /**
    * Like [[getRecords(R, Char, Char, Int):Iterator[Seq[String]]*]] but with all parameters except the first set
    * to defaults and first line set to 0
    */
   def getRecords(r: R,
-                fieldSep:  Char = RecordSplitter.defaultFieldSeparator,
-                quoteChar: Char = RecordSplitter.defaultQuoteChar): Iterator[Array[String]] = {
-    getRecords(r, fieldSep, quoteChar,0)
+                 fieldSep: Char = RecordSplitter.defaultFieldSeparator,
+                 quoteChar: Char = RecordSplitter.defaultQuoteChar,
+                 trimming: Trimming = Trimming.NoAction): Iterator[Array[String]] = {
+    getRecords(r, fieldSep, quoteChar, 0, trimming)
   }
 
   /**
@@ -44,8 +45,9 @@ trait RecordSplitter[R] {
    * to defaults and first line set to 1 to skip the first line. Useful to skip headers.
    */
   def getRecordsSkipHeader(r: R,
-                fieldSep:  Char = RecordSplitter.defaultFieldSeparator,
-                quoteChar: Char = RecordSplitter.defaultQuoteChar): Iterator[Array[String]] = {
-    getRecords(r, fieldSep, quoteChar,1)
+                           fieldSep: Char = RecordSplitter.defaultFieldSeparator,
+                           quoteChar: Char = RecordSplitter.defaultQuoteChar,
+                           trimming: Trimming = Trimming.NoAction): Iterator[Array[String]] = {
+    getRecords(r, fieldSep, quoteChar, 1, trimming)
   }
 }

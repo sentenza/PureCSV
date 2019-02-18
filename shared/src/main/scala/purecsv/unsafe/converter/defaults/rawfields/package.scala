@@ -14,7 +14,6 @@
  */
 package purecsv.unsafe.converter.defaults
 
-import purecsv.safe.converter.defaults.string.Trimming
 import purecsv.unsafe.converter.StringConverter
 import shapeless.{::, Generic, HList, HNil}
 
@@ -24,7 +23,7 @@ package object rawfields {
   import purecsv.unsafe.converter.RawFieldsConverter
 
   implicit val deriveHNil = new RawFieldsConverter[HNil] {
-    override def from(s: Seq[String], trimming: Trimming): HNil = s match {
+    override def from(s: Seq[String]): HNil = s match {
       case Nil => HNil
       case _       => throw new IllegalArgumentException(s"'$s' cannot be converted to HNil")
     }
@@ -35,9 +34,9 @@ package object rawfields {
                           (implicit sc:  StringConverter[V],
                                     fto: RawFieldsConverter[T])
                                        : RawFieldsConverter[V :: T] = new RawFieldsConverter[V :: T] {
-    override def from(s: Seq[String], trimming: Trimming): ::[V, T] = s match {
+    override def from(s: Seq[String]): ::[V, T] = s match {
       case Nil => throw new IllegalArgumentException(s"The empty String cannot be converted to HList")
-      case _   => sc.from(s.head, trimming) :: fto.from(s.tail, trimming)
+      case _   => sc.from(s.head) :: fto.from(s.tail)
     }
 
     override def to(a: ::[V, T]): Seq[String] = sc.to(a.head) +: fto.to(a.tail)
@@ -46,7 +45,7 @@ package object rawfields {
   implicit def deriveClass[A, R](implicit gen: Generic.Aux[A, R],
                                           conv: RawFieldsConverter[R])
                                               : RawFieldsConverter[A] = new RawFieldsConverter[A] {
-    override def from(s: Seq[String], trimming: Trimming): A = gen.from(conv.from(s, trimming))
+    override def from(s: Seq[String]): A = gen.from(conv.from(s))
     override def to(a: A): Seq[String] = conv.to(gen.to(a))
   }
 }

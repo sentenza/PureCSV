@@ -14,7 +14,8 @@
  */
 package purecsv.csviterable
 
-import org.scalatest.{ FunSuite, Matchers }
+import org.scalatest.{FunSuite, Matchers}
+import purecsv.safe.converter.defaults.string.Trimming
 import purecsv.unsafe._
 import purecsv.unsafe.converter.RawFieldsConverter
 
@@ -22,11 +23,18 @@ final case class Person(name: String, surname: String)
 
 class CSVRecordTest extends FunSuite with Matchers {
 
+  val person = Person("Jon", """Snow "III" of Winterfell""")
+
   test("CSVRecord output should be parsable by purecsv") {
-    val person = Person("Jon", "Snow \"III\" of Winterfell")
     implicit val rfc = RawFieldsConverter[Person]
     val csvRecord = CSVRecord(person).toCSV()
     println(s"csvRecord: $csvRecord")
     CSVReader[Person].readCSVFromString(csvRecord) should contain theSameElementsAs Seq(person)
+  }
+  test("CSVRecord output should be parsable by purecsv (trimming applied)") {
+    implicit val rfc = RawFieldsConverter[Person]
+    val csvRecord = """Jon, Snow "III" of Winterfell """
+    println(s"csvRecord: $csvRecord")
+    CSVReader[Person].readCSVFromString(csvRecord, trimming = Trimming.TrimAll) should contain theSameElementsAs Seq(person)
   }
 }

@@ -16,7 +16,6 @@ package purecsv.unsafe.converter.defaults
 
 import java.util.UUID
 
-import purecsv.safe.converter.defaults.string.Trimming
 import purecsv.unsafe.converter.StringConverterUtils
 
 package object string {
@@ -34,24 +33,24 @@ package object string {
     else throw new IllegalArgumentException(s"'$s' cannot be converted to char")
   }
 
-  implicit def boolc:   StringConverter[Boolean] = mkStringConverter((s, t) => strToBool(t.trim(s)),  _.toString)
-  implicit def bytec:   StringConverter[Byte]    = mkStringConverter((s, t) => t.trim(s).toByte, _.toString)
-  implicit def charc:   StringConverter[Char]    = mkStringConverter((s, t) => strToChar(t.trim(s)), _.toString)
-  implicit def doublec: StringConverter[Double]  = mkStringConverter((s, t) => t.trim(s).toDouble, _.toString)
-  implicit def floatc:  StringConverter[Float]   = mkStringConverter((s, t) => t.trim(s).toFloat, _.toString)
-  implicit def intc:    StringConverter[Int]     = mkStringConverter((s, t) => t.trim(s).toInt, _.toString)
-  implicit def longc:   StringConverter[Long]    = mkStringConverter((s, t) => t.trim(s).toLong, _.toString)
-  implicit def shortc:  StringConverter[Short]   = mkStringConverter((s, t) => t.trim(s).toShort, _.toString)
-  implicit def uuidc:   StringConverter[UUID]    = mkStringConverter((s, t) => UUID.fromString(t.trim(s)), _.toString)
-  implicit def stringc: StringConverter[String]  = new StringConverter[String] {
-    override def from(s: String, trimming: Trimming): String = s
+  implicit val boolc:   StringConverter[Boolean] = mkStringConverter(strToBool,_.toString)
+  implicit val bytec:   StringConverter[Byte]    = mkStringConverter(_.toByte,_.toString)
+  implicit val charc:   StringConverter[Char]    = mkStringConverter(strToChar,_.toString)
+  implicit val doublec: StringConverter[Double]  = mkStringConverter(_.toDouble,_.toString)
+  implicit val floatc:  StringConverter[Float]   = mkStringConverter(_.toFloat,_.toString)
+  implicit val intc:    StringConverter[Int]     = mkStringConverter(_.toInt,_.toString)
+  implicit val longc:   StringConverter[Long]    = mkStringConverter(_.toLong,_.toString)
+  implicit val shortc:  StringConverter[Short]   = mkStringConverter(_.toShort,_.toString)
+  implicit val uuidc:   StringConverter[UUID]    = mkStringConverter(UUID.fromString,_.toString)
+  implicit val stringc: StringConverter[String]  = new StringConverter[String] {
+    override def from(s: String): String = s
     override def to(s: String): String = "\"" + s.replaceAllLiterally("\"", "\"\"") + "\""
   }
 
   implicit def optionc[A](implicit ac: StringConverter[A]): StringConverter[Option[A]] = new StringConverter[Option[A]] {
-    override def from(s: String, trimming: Trimming): Option[A] = s match {
+    override def from(s: String): Option[A] = s match {
       case "" => None
-      case x  => Some(ac.from(x, trimming))
+      case x  => Some(ac.from(x))
     }
     override def to(v: Option[A]): String = v.map(ac.to).getOrElse("")
   }
