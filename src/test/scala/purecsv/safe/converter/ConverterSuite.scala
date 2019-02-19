@@ -17,7 +17,6 @@ package purecsv.safe.converter
 import java.util.UUID
 
 import org.scalatest.{FunSuite, Matchers, TryValues}
-import purecsv.safe.converter.defaults.string.Trimming.{TrimAll, TrimEmpty}
 import purecsv.safe.converter.defaults.string._
 import purecsv.util.serializeAndDeserialize
 import shapeless.{::, Generic, HNil}
@@ -82,10 +81,16 @@ class ConverterSuite extends FunSuite with Matchers with TryValues {
     val conv = RawFieldsConverter[Event2]
     conv.tryFrom(Seq("2","bar")) should be (Success(new Event2(2,"bar")))
 
-    // Strings are quoted
+    // Strings are not quoted
     val event = new Event2(1,"foo")
-    val expectedEvent = new Event2(1, "\"foo\"")
-    conv.tryFrom(conv.to(event)) should be (Success(expectedEvent))
+    conv.tryFrom(conv.to(event)) should be (Success(event))
+  }
+
+  test("conversion String -> class with custom Generic works - with quotes") {
+    val conv = RawFieldsConverter[Event2]
+    // Strings are quoted
+    val event = new Event2(1,"""with "quotes"""")
+    conv.to(event) should be (Seq("1", "\"with \"\"quotes\"\"\""))
   }
 
   test("serializing a RawFieldsConverter should work") {

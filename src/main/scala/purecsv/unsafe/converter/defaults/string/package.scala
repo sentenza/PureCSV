@@ -44,7 +44,7 @@ package object string {
   implicit val uuidc:   StringConverter[UUID]    = mkStringConverter(UUID.fromString,_.toString)
   implicit val stringc: StringConverter[String]  = new StringConverter[String] {
     override def from(s: String): String = s
-    override def to(s: String): String = "\"" + s.replaceAllLiterally("\"", "\"\"") + "\""
+    override def to(s: String): String = StringConverterUtils.quoteTextIfNecessary(s)
   }
 
   implicit def optionc[A](implicit ac: StringConverter[A]): StringConverter[Option[A]] = new StringConverter[Option[A]] {

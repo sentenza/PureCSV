@@ -16,6 +16,8 @@ package purecsv.safe.converter.defaults
 
 import java.util.UUID
 
+import purecsv.unsafe.converter.StringConverterUtils
+
 import scala.util.{Success, Try}
 
 
@@ -53,7 +55,7 @@ package object string {
   implicit val uuidc:   StringConverter[UUID]    = mkStringConverter(s => Try(UUID.fromString(s)),_.toString)
   implicit val stringc: StringConverter[String]  = new StringConverter[String] {
     override def tryFrom(s: String): Try[String] = Success(s)
-    override def to(s: String): String = "\"" + s.replaceAllLiterally("\"", "\"\"") + "\""
+    override def to(s: String): String = StringConverterUtils.quoteTextIfNecessary(s)
   }
 
   implicit def optionc[A](implicit ac: StringConverter[A]): StringConverter[Option[A]] = new StringConverter[Option[A]] {

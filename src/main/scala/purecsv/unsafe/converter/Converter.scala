@@ -14,6 +14,10 @@
  */
 package purecsv.unsafe.converter
 
+import java.io.StringWriter
+
+import com.github.tototoshi.csv.CSVWriter
+
 /** Typeclass for Converters of A from/to B */
 trait Converter[A,B] extends Serializable {
   /**
@@ -46,6 +50,23 @@ object StringConverterUtils {
   def mkStringConverter[A](fromF: String => A, toF: A => String) = new StringConverter[A] {
     def from(s: String): A = fromF(s)
     def to(a: A): String = toF(a)
+  }
+  def quoteTextIfNecessary(s: String): String = {
+    val sw = new StringWriter(64)
+    try {
+      val writer = new CSVWriter(sw)
+      writer.writeRow(Seq(s))
+      removeTrailingNewLines(sw.toString)
+    } finally {
+      sw.close()
+    }
+  }
+  private def removeTrailingNewLines(str: String): String = {
+    val pass1 = removeLastIfMatches(str, "\n")
+    removeLastIfMatches(pass1, "\r")
+  }
+  private def removeLastIfMatches(str: String, last: String): String = {
+    if (str.endsWith(last)) str.substring(0, str.length - last.length) else str
   }
 }
 

@@ -30,7 +30,7 @@ case class Event(ts: Long, msg: String, user: Option[Int])
 class safeSuite extends FunSuite with Matchers {
 
   val events = Seq(Event(1,"foo",None),Event(2,"bar",Some(1)))
-  val rawEvents = Seq("1,\"foo\",","2,\"bar\",1")
+  val rawEvents = Seq("1,foo,", "2,bar,1")
 
   test("Converting an iterable of events to CSV lines works") {
     events.toCSVLines().toSeq should contain theSameElementsInOrderAs rawEvents
