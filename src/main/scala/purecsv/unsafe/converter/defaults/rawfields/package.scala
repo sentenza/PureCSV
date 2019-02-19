@@ -31,9 +31,9 @@ package object rawfields {
   }
 
   implicit def deriveHCons[V, T <: HList]
-                          (implicit sc:  StringConverter[V],
-                                    fto: RawFieldsConverter[T])
-                                       : RawFieldsConverter[V :: T] = new RawFieldsConverter[V :: T] {
+  (implicit sc:  StringConverter[V],
+   fto: RawFieldsConverter[T])
+  : RawFieldsConverter[V :: T] = new RawFieldsConverter[V :: T] {
     override def from(s: Seq[String]): ::[V, T] = s match {
       case Nil => throw new IllegalArgumentException(s"The empty String cannot be converted to HList")
       case _   => sc.from(s.head) :: fto.from(s.tail)
@@ -43,8 +43,8 @@ package object rawfields {
   }
 
   implicit def deriveClass[A, R](implicit gen: Generic.Aux[A, R],
-                                          conv: RawFieldsConverter[R])
-                                              : RawFieldsConverter[A] = new RawFieldsConverter[A] {
+                                 conv: RawFieldsConverter[R])
+  : RawFieldsConverter[A] = new RawFieldsConverter[A] {
     override def from(s: Seq[String]): A = gen.from(conv.from(s))
     override def to(a: A): Seq[String] = conv.to(gen.to(a))
   }

@@ -25,36 +25,34 @@ import org.scalatest.{FunSuite, Matchers}
 case class Event(ts: Long, msg: String, user: Option[Int])
 
 class unsafeSuite extends FunSuite with Matchers {
-
-  val events = Seq(Event(1,"foo",None),Event(2,"bar",Some(1)))
-  val rawEvents = Seq("1,\"foo\",","2,\"bar\",1")
+  private val events = Seq(Event(1,"foo",None),Event(2,"bar",Some(1)))
+  private val rawEvents = Seq("1,\"foo\",","2,\"bar\",1")
 
   test("Converting an iterable of events to CSV lines works") {
-    events.toCSVLines().toSeq should contain theSameElementsInOrderAs(rawEvents)
+    events.toCSVLines().toSeq should contain theSameElementsInOrderAs rawEvents
   }
 
   test("Reading events from a String reader works") {
     val reader = new CharArrayReader(rawEvents.mkString(System.lineSeparator()).toCharArray)
-    CSVReader[Event].readCSVFromReader(reader).toSeq should be (events)
+    CSVReader[Event].readCSVFromReader(reader, skipHeader = true).toSeq should be (events)
   }
 
   test("Can read a file written with writeCSVToFile") {
     val file = Files.createTempFile("casecsv",".csv").toFile
     file.deleteOnExit()
     events.writeCSVToFile(file)
-    CSVReader[Event].readCSVFromFile(file) should contain theSameElementsInOrderAs(events)
+    CSVReader[Event].readCSVFromFile(file, skipHeader = true) should contain theSameElementsInOrderAs events
   }
 
   test("serializing a CSVReader should work") {
     val csvReader = CSVReader[Event]
     val csvReaderDeserialized = serializeAndDeserialize(csvReader)
 
-    val result = csvReaderDeserialized.readCSVFromString("123|bar|\n456|foo|3", false, '|')
+    val result = csvReaderDeserialized.readCSVFromString("123|bar|\n456|foo|3", true, '|')
 
     result.length should be (2)
     result should be (List(
       Event(123, "bar", None),
       Event(456, "foo", Some(3))))
   }
-
 }

@@ -20,8 +20,10 @@ import purecsv.safe.converter.defaults.string.Trimming
 import purecsv.safe.converter.defaults.string.Trimming.NoAction
 import purecsv.unsafe.{RecordSplitter, RecordSplitterImpl}
 import purecsv.safe.converter.{RawFieldsConverter, StringConverter}
+import purecsv.safe.tryutil.ClassUtil.caseClassParams
 import shapeless.{::, Generic, HList, HNil}
 
+import scala.reflect.runtime.universe.TypeTag
 import scala.util.Try
 
 
@@ -43,13 +45,13 @@ package object safe {
   // Raw Fields
   implicit val deriveHNil: RawFieldsConverter[HNil] = purecsv.safe.converter.defaults.rawfields.deriveHNil
   implicit def deriveHCons[V, T <: HList](implicit sc:  StringConverter[V],
-                                                  fto: RawFieldsConverter[T])
-                                                     : RawFieldsConverter[V :: T] = {
+                                          fto: RawFieldsConverter[T])
+  : RawFieldsConverter[V :: T] = {
     purecsv.safe.converter.defaults.rawfields.deriveHCons
   }
   implicit def deriveClass[A, R](implicit gen: Generic.Aux[A, R],
-                                         conv: RawFieldsConverter[R])
-                                             : RawFieldsConverter[A] = {
+                                 conv: RawFieldsConverter[R])
+  : RawFieldsConverter[A] = {
     purecsv.safe.converter.defaults.rawfields.deriveClass
   }
 
@@ -66,12 +68,11 @@ package object safe {
     def readCSVFromReader(r: Reader,
                           delimiter: Char = RecordSplitter.defaultFieldSeparator,
                           trimming: Trimming = NoAction,
-                          skipHeader: Boolean = false
-                          ): Iterator[Try[A]] = {
+                          skipHeader: Boolean = false)(implicit typeTag: TypeTag[A]): Iterator[Try[A]] = {
       val records = if (skipHeader) {
         RecordSplitterImpl.getRecordsSkipHeader(r, delimiter, trimming = trimming)
       } else {
-        RecordSplitterImpl.getRecords(r, delimiter, trimming = trimming)
+        RecordSplitterImpl.getRecords(r, caseClassParams[A], delimiter, trimming = trimming)
       }
       records.map(record => rfc.tryFrom(record.toSeq))
     }
@@ -79,8 +80,7 @@ package object safe {
     def readCSVFromString(s: String,
                           delimiter: Char = RecordSplitter.defaultFieldSeparator,
                           trimming: Trimming = NoAction,
-                          skipHeader: Boolean = false
-                          ): List[Try[A]] = {
+                          skipHeader: Boolean = false)(implicit typeTag: TypeTag[A]): List[Try[A]] = {
       val r = new StringReader(s)
       try {
         readCSVFromReader(r, delimiter, trimming, skipHeader).toList
@@ -92,7 +92,7 @@ package object safe {
     def readCSVFromFile(f: File,
                         delimiter: Char = RecordSplitter.defaultFieldSeparator,
                         trimming: Trimming = NoAction,
-                        skipHeader: Boolean = false): List[Try[A]] = {
+                        skipHeader: Boolean = false)(implicit typeTag: TypeTag[A]): List[Try[A]] = {
       val r = new BufferedReader(new FileReader(f))
       try {
         readCSVFromReader(r, delimiter, trimming, skipHeader).toList
@@ -104,7 +104,7 @@ package object safe {
     def readCSVFromFileName(fileName: String,
                             delimiter:Char = RecordSplitter.defaultFieldSeparator,
                             trimming: Trimming = NoAction,
-                            skipHeader: Boolean = false): List[Try[A]] = {
+                            skipHeader: Boolean = false)(implicit typeTag: TypeTag[A]): List[Try[A]] = {
       readCSVFromFile(new File(fileName), delimiter, trimming, skipHeader)
     }
 

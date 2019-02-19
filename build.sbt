@@ -49,7 +49,8 @@ lazy val pureCSV = project.in(file(".")).
       "com.chuusai" %% "shapeless" % "2.3.3",
       compilerPlugin("org.scalamacros" % "paradise" % "2.1.0" cross CrossVersion.full),
       "org.scalatest" %% "scalatest" % "3.0.5" % Test,
-      "com.github.tototoshi" %% "scala-csv" % "1.3.5"
+      "com.github.tototoshi" %% "scala-csv" % "1.3.5",
+      "org.scala-lang" % "scala-reflect" % scalaVersion.value
     ),
     resolvers ++= Seq(
       Resolver.sonatypeRepo("releases"),

@@ -17,31 +17,41 @@ package purecsv.unsafe
 import java.io.Reader
 
 import com.github.tototoshi.csv.DefaultCSVFormat
+import com.github.tototoshi.csv.{CSVReader => TototoshiCSVReader}
 import purecsv.safe.converter.defaults.string.Trimming
 
-
 /**
- * A [[purecsv.unsafe.RecordSplitter]] that uses the scala-csv library for extracting records from a [[Reader]]
- */
+  * A [[purecsv.unsafe.RecordSplitter]] that uses the scala-csv library for extracting records from a [[Reader]]
+  */
 object RecordSplitterImpl extends RecordSplitter[Reader] {
+  private val EmptyString = ""
 
   override def getRecords(reader: Reader,
                           fieldSep: Char,
                           quoteCharacter: Char,
                           firstLineHeader: Boolean,
-                          trimming: Trimming): Iterator[Iterable[String]] = {
-
-    implicit val csvFormat = new DefaultCSVFormat {
+                          trimming: Trimming,
+                          fields: Seq[String]): Iterator[Iterable[String]] = {
+    implicit val csvFormat: DefaultCSVFormat = new DefaultCSVFormat {
       override val delimiter: Char = fieldSep
       override val quoteChar: Char = quoteCharacter
     }
-    val csvReader = com.github.tototoshi.csv.CSVReader.open(reader)
-    val mappedReader = csvReader.iterator.map(line => line.map(trimming.trim(_)))
-    val filtered = mappedReader.filter(array => array.size != 1 || array(0) != "") // skip empty lines
+
+    val csvReader = TototoshiCSVReader.open(reader)
     if (firstLineHeader) {
-      filtered.drop(1)
+      toValuesIteratorWithHeadersOrdering(csvReader, trimming, fields)
     } else {
-      filtered
+      toValuesIteratorWithoutHeadersOrdering(csvReader, trimming)
     }
   }
+
+  private def toValuesIteratorWithHeadersOrdering(csvReader: TototoshiCSVReader, trimming: Trimming, fields: Seq[String]) =
+    csvReader.iteratorWithHeaders
+      .map(line => line.mapValues(trimming.trim))
+      .map(f => fields.map(field => f.getOrElse(field, EmptyString)))
+
+  private def toValuesIteratorWithoutHeadersOrdering(csvReader: TototoshiCSVReader, trimming: Trimming) =
+    csvReader.iterator
+      .map(line => line.map(trimming.trim))
+      .filter(array => array.size != 1 || array(0) != EmptyString)
 }
