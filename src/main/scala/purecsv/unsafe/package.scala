@@ -14,13 +14,14 @@
  */
 package purecsv
 
-import java.io._
+import java.io.{File, Reader, StringReader}
 
 import purecsv.config.Headers.ParseHeaders
 import purecsv.config.{Headers, Trimming}
 import purecsv.config.Trimming.NoAction
 import purecsv.util.ClassUtil.caseClassParams
 import purecsv.unsafe.converter.{RawFieldsConverter, StringConverter}
+import purecsv.util.FileUtil
 import shapeless.{::, Generic, HList, HNil}
 
 import scala.reflect.runtime.universe.TypeTag
@@ -90,7 +91,7 @@ package object unsafe {
                         delimiter: Char = RecordSplitter.defaultFieldSeparator,
                         trimming: Trimming = NoAction,
                         headers: Headers = ParseHeaders)(implicit typeTag: TypeTag[A]): List[A] = {
-      val r = new BufferedReader(new FileReader(f))
+      val r = FileUtil.createReader(f)
       try {
         readCSVFromReader(r, delimiter, trimming, headers).toList
       } finally {
