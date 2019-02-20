@@ -1,9 +1,9 @@
-package purecsv.safe.tryutil
+package purecsv.util
 
 import org.scalatest.{FunSuite, MustMatchers}
-import purecsv.safe.tryutil.ClassUtil.caseClassParams
+import purecsv.util.ClassUtil.caseClassParams
 
-class ClassUtilTest extends FunSuite with MustMatchers {
+class ClassUtilSuite extends FunSuite with MustMatchers {
   private final case class TestClass(id: Int, name: String, email: Option[String])
   private final case class EmptyTestClass()
 

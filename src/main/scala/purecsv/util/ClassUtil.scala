@@ -1,4 +1,4 @@
-package purecsv.safe.tryutil
+package purecsv.util
 
 import scala.reflect.runtime.universe.TypeTag
 import scala.reflect.runtime.universe.typeOf

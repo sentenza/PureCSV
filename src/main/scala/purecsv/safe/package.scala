@@ -16,39 +16,42 @@ package purecsv
 
 import java.io._
 
-import purecsv.safe.converter.defaults.string.Trimming
-import purecsv.safe.converter.defaults.string.Trimming.NoAction
+import purecsv.config.Headers.ParseHeaders
+import purecsv.config.{Headers, Trimming}
+import purecsv.config.Trimming.NoAction
 import purecsv.unsafe.{RecordSplitter, RecordSplitterImpl}
 import purecsv.safe.converter.{RawFieldsConverter, StringConverter}
-import purecsv.safe.tryutil.ClassUtil.caseClassParams
+import purecsv.util.ClassUtil.caseClassParams
 import shapeless.{::, Generic, HList, HNil}
 
 import scala.reflect.runtime.universe.TypeTag
 import scala.util.Try
 
-
 package object safe {
 
   // String
-  implicit val boolc:   StringConverter[Boolean] = purecsv.safe.converter.defaults.string.boolc
-  implicit val bytec:   StringConverter[Byte]    = purecsv.safe.converter.defaults.string.bytec
-  implicit val charc:   StringConverter[Char]    = purecsv.safe.converter.defaults.string.charc
-  implicit val doublec: StringConverter[Double]  = purecsv.safe.converter.defaults.string.doublec
-  implicit val floatc:  StringConverter[Float]   = purecsv.safe.converter.defaults.string.floatc
-  implicit val intc:    StringConverter[Int]     = purecsv.safe.converter.defaults.string.intc
-  implicit val longc:   StringConverter[Long]    = purecsv.safe.converter.defaults.string.longc
-  implicit val shortc:  StringConverter[Short]   = purecsv.safe.converter.defaults.string.shortc
-  implicit val stringc: StringConverter[String]  = purecsv.safe.converter.defaults.string.stringc
+  implicit val boolc: StringConverter[Boolean] = purecsv.safe.converter.defaults.string.boolc
+  implicit val bytec: StringConverter[Byte] = purecsv.safe.converter.defaults.string.bytec
+  implicit val charc: StringConverter[Char] = purecsv.safe.converter.defaults.string.charc
+  implicit val doublec: StringConverter[Double] = purecsv.safe.converter.defaults.string.doublec
+  implicit val floatc: StringConverter[Float] = purecsv.safe.converter.defaults.string.floatc
+  implicit val intc: StringConverter[Int] = purecsv.safe.converter.defaults.string.intc
+  implicit val longc: StringConverter[Long] = purecsv.safe.converter.defaults.string.longc
+  implicit val shortc: StringConverter[Short] = purecsv.safe.converter.defaults.string.shortc
+  implicit val stringc: StringConverter[String] = purecsv.safe.converter.defaults.string.stringc
+
   implicit def optionc[A](implicit ac: StringConverter[A]): StringConverter[Option[A]] = purecsv.safe.converter.defaults.string.optionc
 
 
   // Raw Fields
   implicit val deriveHNil: RawFieldsConverter[HNil] = purecsv.safe.converter.defaults.rawfields.deriveHNil
-  implicit def deriveHCons[V, T <: HList](implicit sc:  StringConverter[V],
+
+  implicit def deriveHCons[V, T <: HList](implicit sc: StringConverter[V],
                                           fto: RawFieldsConverter[T])
   : RawFieldsConverter[V :: T] = {
     purecsv.safe.converter.defaults.rawfields.deriveHCons
   }
+
   implicit def deriveClass[A, R](implicit gen: Generic.Aux[A, R],
                                  conv: RawFieldsConverter[R])
   : RawFieldsConverter[A] = {
@@ -68,22 +71,18 @@ package object safe {
     def readCSVFromReader(r: Reader,
                           delimiter: Char = RecordSplitter.defaultFieldSeparator,
                           trimming: Trimming = NoAction,
-                          skipHeader: Boolean = false)(implicit typeTag: TypeTag[A]): Iterator[Try[A]] = {
-      val records = if (skipHeader) {
-        RecordSplitterImpl.getRecordsSkipHeader(r, delimiter, trimming = trimming)
-      } else {
-        RecordSplitterImpl.getRecords(r, caseClassParams[A], delimiter, trimming = trimming)
-      }
-      records.map(record => rfc.tryFrom(record.toSeq))
+                          headers: Headers = ParseHeaders)(implicit typeTag: TypeTag[A]): Iterator[Try[A]] = {
+      RecordSplitterImpl.getRecords(r, caseClassParams[A], delimiter, trimming = trimming, headers = headers)
+        .map(record => rfc.tryFrom(record.toSeq))
     }
 
     def readCSVFromString(s: String,
                           delimiter: Char = RecordSplitter.defaultFieldSeparator,
                           trimming: Trimming = NoAction,
-                          skipHeader: Boolean = false)(implicit typeTag: TypeTag[A]): List[Try[A]] = {
+                          headers: Headers = ParseHeaders)(implicit typeTag: TypeTag[A]): List[Try[A]] = {
       val r = new StringReader(s)
       try {
-        readCSVFromReader(r, delimiter, trimming, skipHeader).toList
+        readCSVFromReader(r, delimiter, trimming, headers).toList
       } finally {
         r.close()
       }
@@ -92,20 +91,20 @@ package object safe {
     def readCSVFromFile(f: File,
                         delimiter: Char = RecordSplitter.defaultFieldSeparator,
                         trimming: Trimming = NoAction,
-                        skipHeader: Boolean = false)(implicit typeTag: TypeTag[A]): List[Try[A]] = {
+                        headers: Headers = ParseHeaders)(implicit typeTag: TypeTag[A]): List[Try[A]] = {
       val r = new BufferedReader(new FileReader(f))
       try {
-        readCSVFromReader(r, delimiter, trimming, skipHeader).toList
+        readCSVFromReader(r, delimiter, trimming, headers).toList
       } finally {
         r.close()
       }
     }
 
     def readCSVFromFileName(fileName: String,
-                            delimiter:Char = RecordSplitter.defaultFieldSeparator,
+                            delimiter: Char = RecordSplitter.defaultFieldSeparator,
                             trimming: Trimming = NoAction,
-                            skipHeader: Boolean = false)(implicit typeTag: TypeTag[A]): List[Try[A]] = {
-      readCSVFromFile(new File(fileName), delimiter, trimming, skipHeader)
+                            headers: Headers = ParseHeaders)(implicit typeTag: TypeTag[A]): List[Try[A]] = {
+      readCSVFromFile(new File(fileName), delimiter, trimming, headers)
     }
 
   }
@@ -115,4 +114,5 @@ package object safe {
       override def rfc = rfcImp
     }
   }
+
 }

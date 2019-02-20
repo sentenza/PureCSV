@@ -26,24 +26,6 @@ package object string {
   import purecsv.safe.converter.StringConverterUtils.mkStringConverter
   import purecsv.unsafe.converter.defaults.string.{strToBool, strToChar}
 
-  sealed trait Trimming {
-    def trim(s: String): String
-  }
-
-  object Trimming {
-    object NoAction extends Trimming {
-      override def trim(s: String): String = s
-    }
-
-    object TrimEmpty extends Trimming {
-      override def trim(s: String): String = if (s.matches("\\s+")) s.trim else s
-    }
-
-    object TrimAll extends Trimming {
-      override def trim(s: String): String = s.trim
-    }
-  }
-
   implicit val boolc:   StringConverter[Boolean] = mkStringConverter(s => Try(strToBool(s)),_.toString)
   implicit val bytec:   StringConverter[Byte]    = mkStringConverter(s => Try(s.toByte),_.toString)
   implicit val charc:   StringConverter[Char]    = mkStringConverter(s => Try(strToChar(s)),_.toString)

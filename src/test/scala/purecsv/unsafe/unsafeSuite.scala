@@ -19,8 +19,8 @@ import java.nio.file.Files
 
 import purecsv.unsafe._
 import purecsv.util.serializeAndDeserialize
-
 import org.scalatest.{FunSuite, Matchers}
+import purecsv.config.Headers
 
 case class Event(ts: Long, msg: String, user: Option[Int])
 
@@ -35,21 +35,21 @@ class unsafeSuite extends FunSuite with Matchers {
 
   test("Reading events from a String reader works") {
     val reader = new CharArrayReader(rawEvents.mkString(System.lineSeparator()).toCharArray)
-    CSVReader[Event].readCSVFromReader(reader, skipHeader = true).toSeq should be (events)
+    CSVReader[Event].readCSVFromReader(reader, headers = Headers.None).toSeq should be (events)
   }
 
   test("Can read a file written with writeCSVToFile") {
     val file = Files.createTempFile("casecsv",".csv").toFile
     file.deleteOnExit()
     events.writeCSVToFile(file)
-    CSVReader[Event].readCSVFromFile(file, skipHeader = true) should contain theSameElementsInOrderAs events
+    CSVReader[Event].readCSVFromFile(file, headers = Headers.None) should contain theSameElementsInOrderAs events
   }
 
   test("serializing a CSVReader should work") {
     val csvReader = CSVReader[Event]
     val csvReaderDeserialized = serializeAndDeserialize(csvReader)
 
-    val result = csvReaderDeserialized.readCSVFromString("123|bar|\n456|foo|3", true, '|')
+    val result = csvReaderDeserialized.readCSVFromString("123|bar|\n456|foo|3", '|', headers = Headers.None)
 
     result.length should be (2)
     result should be (List(

@@ -86,10 +86,20 @@ scala> case class Address(name: String, address: String)
 scala> Seq(Address("alice","wonderland")).writeCSVToFileName("/tmp/example.csv", header=Some(Seq("name","address")))
 scala> scala.io.Source.fromFile("/tmp/example.csv").getLines.toList
 res2: List[String] = List(name,address, "alice","wonderland")
-scala> CSVReader[Address].readCSVFromFileName("/tmp/example.csv", skipHeader=true)
+scala> CSVReader[Address].readCSVFromFileName("/tmp/example.csv", headers = Headers.ReadAndIgnore)
 res1: List[Address] = List(Address(alice,wonderland))
 ```
+### Headers ###
 
+By default purecsv assumes that headers are present in csv that is being read (headers is set by default to Headers.ParseHeaders). 
+For Headers.ParseHeaders ordering and number (value for absent columns will be set to None / empty string) of columns in csv does not matter.
+
+Other options for Headers are
+* Headers.None - csv does not contain headers
+* Headers.ReadAndIgnore - csv contains headers that should be skipped
+
+In both cases ordering of columns matters.
+ 
 
 ### Reading from CSV: Safe vs Unsafe ###
 

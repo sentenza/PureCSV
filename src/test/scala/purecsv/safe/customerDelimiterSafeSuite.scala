@@ -20,7 +20,8 @@ import java.nio.file.Files
 import purecsv.safe._
 import purecsv.safe.tryutil._
 import org.scalatest.{FunSuite, Matchers}
-import purecsv.safe.converter.defaults.string.Trimming.NoAction
+import purecsv.config.Headers
+import purecsv.config.Trimming.NoAction
 
 import scala.util.Success
 
@@ -35,12 +36,12 @@ class customerDelimiterSafeSuite extends FunSuite with Matchers {
 
   test("Reading events from a String reader works") {
     val reader = new CharArrayReader(rawEvents.mkString(System.lineSeparator()).toCharArray)
-    CSVReader[Event].readCSVFromReader(reader, '|', NoAction, true).toSeq should contain theSameElementsInOrderAs events.map(Success(_))
+    CSVReader[Event].readCSVFromReader(reader, '|', NoAction, Headers.None).toSeq should contain theSameElementsInOrderAs events.map(Success(_))
   }
 
   test("Reading events and get successes and failures works") {
     val reader = new CharArrayReader(rawEvents.mkString(System.lineSeparator()).toCharArray)
-    val (successes,failures) = CSVReader[Event].readCSVFromReader(reader, '|', NoAction, true).getSuccessesAndFailures
+    val (successes,failures) = CSVReader[Event].readCSVFromReader(reader, '|', NoAction, Headers.None).getSuccessesAndFailures
     val expectedSuccesses = Seq(1 -> events(0), 2 -> events(1))
     successes should contain theSameElementsInOrderAs expectedSuccesses
     failures should be (Seq.empty[Event])
@@ -49,6 +50,6 @@ class customerDelimiterSafeSuite extends FunSuite with Matchers {
   test("Can read a file written with writeCSVToFile") {
     val file = Files.createTempFile("casecsv",".csv").toFile
     events.writeCSVToFile(file, "☃")
-    CSVReader[Event].readCSVFromFile(file, '☃', skipHeader = true) should contain theSameElementsInOrderAs events.map(Success(_))
+    CSVReader[Event].readCSVFromFile(file, '☃', headers = Headers.None) should contain theSameElementsInOrderAs events.map(Success(_))
   }
 }

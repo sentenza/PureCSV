@@ -14,7 +14,8 @@
  */
 package purecsv.unsafe
 
-import purecsv.safe.converter.defaults.string.Trimming
+import purecsv.config.Headers.ParseHeaders
+import purecsv.config.{Headers, Trimming}
 
 
 object RecordSplitter {
@@ -29,7 +30,7 @@ trait RecordSplitter[R] {
   /** Split the input [[R]] into records, where each record is a sequence of raw fields */
   def getRecords(r: R, fieldSep: Char,
                  quoteChar: Char,
-                 firstLineHeader: Boolean,
+                 headers: Headers,
                  trimming: Trimming,
                  fields: Seq[String]): Iterator[Iterable[String]]
 
@@ -41,18 +42,8 @@ trait RecordSplitter[R] {
                  fields: Seq[String],
                  fieldSep: Char = RecordSplitter.defaultFieldSeparator,
                  quoteChar: Char = RecordSplitter.defaultQuoteChar,
+                 headers: Headers = ParseHeaders,
                  trimming: Trimming = Trimming.NoAction): Iterator[Iterable[String]] = {
-    getRecords(r, fieldSep, quoteChar, true, trimming, fields)
-  }
-
-  /**
-   * Like [[getRecords(R, Char, Char, Int):Iterator[Iterable[String]]*]] but with all parameters except the first set
-   * to defaults and first line set to 1 to skip the first line. Useful to skip headers.
-   */
-  def getRecordsSkipHeader(r: R,
-                           fieldSep: Char = RecordSplitter.defaultFieldSeparator,
-                           quoteChar: Char = RecordSplitter.defaultQuoteChar,
-                           trimming: Trimming = Trimming.NoAction): Iterator[Iterable[String]] = {
-    getRecords(r, fieldSep, quoteChar, false, trimming, Seq.empty)
+    getRecords(r, fieldSep, quoteChar, headers, trimming, fields)
   }
 }

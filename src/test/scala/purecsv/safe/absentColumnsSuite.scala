@@ -1,8 +1,8 @@
 package purecsv.safe
 
 import org.scalatest._
-import purecsv.safe.converter.defaults.string.Trimming
-import purecsv.safe.converter.defaults.string.Trimming.NoAction
+import purecsv.config.{Headers, Trimming}
+import purecsv.config.Trimming.NoAction
 
 import scala.util.Success
 
@@ -45,9 +45,9 @@ class absentColumnsSuite extends FunSuite with MustMatchers with TryValues {
     val csv = """id,surname
                 |42,ross""".stripMargin
 
-    readCsv(csv, NoAction, skipHeader = true).foreach(_.failure.exception mustBe an[IllegalArgumentException])
+    readCsv(csv, NoAction, headers = Headers.None).foreach(_.failure.exception mustBe an[IllegalArgumentException])
   }
 
-  private def readCsv(csv: String, trimming: Trimming, skipHeader: Boolean = false) =
-    CSVReader[TestAccount].readCSVFromString(csv, ',', skipHeader = skipHeader, trimming = trimming)
+  private def readCsv(csv: String, trimming: Trimming, headers: Headers = Headers.ParseHeaders) =
+    CSVReader[TestAccount].readCSVFromString(csv, ',', trimming = trimming, headers)
 }

@@ -2,8 +2,8 @@ package purecsv.safe
 
 import org.scalatest.{FlatSpec, FunSuite, MustMatchers}
 import purecsv.safe._
-import purecsv.safe.converter.defaults.string.Trimming
-import purecsv.safe.converter.defaults.string.Trimming.{NoAction, TrimAll, TrimEmpty}
+import purecsv.config.Trimming
+import purecsv.config.Trimming.{NoAction, TrimAll, TrimEmpty}
 
 import scala.util.Success
 
@@ -53,5 +53,5 @@ class trimmingSuite extends FunSuite with MustMatchers {
   }
 
   private def readCsv(csv: String, trimming: Trimming) =
-    CSVReader[Account].readCSVFromString(csv, ',', skipHeader = false, trimming = trimming)
+    CSVReader[Account].readCSVFromString(csv, ',', trimming = trimming)
 }

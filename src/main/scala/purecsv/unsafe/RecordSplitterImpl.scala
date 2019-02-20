@@ -18,7 +18,7 @@ import java.io.Reader
 
 import com.github.tototoshi.csv.DefaultCSVFormat
 import com.github.tototoshi.csv.{CSVReader => TototoshiCSVReader}
-import purecsv.safe.converter.defaults.string.Trimming
+import purecsv.config.{Headers, Trimming}
 
 /**
   * A [[purecsv.unsafe.RecordSplitter]] that uses the scala-csv library for extracting records from a [[Reader]]
@@ -29,7 +29,7 @@ object RecordSplitterImpl extends RecordSplitter[Reader] {
   override def getRecords(reader: Reader,
                           fieldSep: Char,
                           quoteCharacter: Char,
-                          firstLineHeader: Boolean,
+                          headers: Headers,
                           trimming: Trimming,
                           fields: Seq[String]): Iterator[Iterable[String]] = {
     implicit val csvFormat: DefaultCSVFormat = new DefaultCSVFormat {
@@ -38,10 +38,10 @@ object RecordSplitterImpl extends RecordSplitter[Reader] {
     }
 
     val csvReader = TototoshiCSVReader.open(reader)
-    if (firstLineHeader) {
-      toValuesIteratorWithHeadersOrdering(csvReader, trimming, fields)
-    } else {
-      toValuesIteratorWithoutHeadersOrdering(csvReader, trimming)
+    headers match {
+      case Headers.ParseHeaders   => toValuesIteratorWithHeadersOrdering(csvReader, trimming, fields)
+      case Headers.None           => toValuesIteratorWithoutHeadersOrdering(csvReader, trimming, 0)
+      case Headers.ReadAndIgnore  => toValuesIteratorWithoutHeadersOrdering(csvReader, trimming, 1)
     }
   }
 
@@ -50,8 +50,9 @@ object RecordSplitterImpl extends RecordSplitter[Reader] {
       .map(line => line.mapValues(trimming.trim))
       .map(f => fields.map(field => f.getOrElse(field, EmptyString)))
 
-  private def toValuesIteratorWithoutHeadersOrdering(csvReader: TototoshiCSVReader, trimming: Trimming) =
+  private def toValuesIteratorWithoutHeadersOrdering(csvReader: TototoshiCSVReader, trimming: Trimming, linesToBeDropped: Int) =
     csvReader.iterator
+      .drop(linesToBeDropped)
       .map(line => line.map(trimming.trim))
-      .filter(array => array.size != 1 || array(0) != EmptyString)
+      .filter(array => array.size != 1 || array.head != EmptyString)
 }

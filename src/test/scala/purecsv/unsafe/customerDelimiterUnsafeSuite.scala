@@ -19,7 +19,8 @@ import java.nio.file.Files
 
 import purecsv.unsafe._
 import org.scalatest.{FunSuite, Matchers}
-import purecsv.safe.converter.defaults.string.Trimming.NoAction
+import purecsv.config.Headers
+import purecsv.config.Trimming.NoAction
 
 
 class customerDelimiterUnsafeSuite extends FunSuite with Matchers {
@@ -34,13 +35,13 @@ class customerDelimiterUnsafeSuite extends FunSuite with Matchers {
 
   test("Reading events from a String reader works") {
     val reader = new CharArrayReader(rawEvents.mkString(System.lineSeparator()).toCharArray)
-    CSVReader[Event].readCSVFromReader(reader, '|', true, NoAction).toSeq should be (events)
+    CSVReader[Event].readCSVFromReader(reader, '|', NoAction, Headers.None).toSeq should be (events)
   }
 
   test("Can read a file written with writeCSVToFile") {
     val file = Files.createTempFile("casecsv",".csv").toFile
     file.deleteOnExit()
     events.writeCSVToFile(file, "☃")
-    CSVReader[Event].readCSVFromFile(file, true, '☃') should contain theSameElementsInOrderAs events
+    CSVReader[Event].readCSVFromFile(file, '☃', headers = Headers.None) should contain theSameElementsInOrderAs events
   }
 }
