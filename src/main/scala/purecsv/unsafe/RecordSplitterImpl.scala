@@ -48,11 +48,12 @@ object RecordSplitterImpl extends RecordSplitter[Reader] {
   private def toValuesIteratorWithHeadersOrdering(csvReader: TototoshiCSVReader, trimming: Trimming, fields: Seq[String]) =
     csvReader.iteratorWithHeaders
       .map(line => line.mapValues(trimming.trim))
+      .filter(array => array.size != 1 || array.head._2.trim != EmptyString)
       .map(f => fields.map(field => f.getOrElse(field, EmptyString)))
 
   private def toValuesIteratorWithoutHeadersOrdering(csvReader: TototoshiCSVReader, trimming: Trimming, linesToBeDropped: Int) =
     csvReader.iterator
       .drop(linesToBeDropped)
       .map(line => line.map(trimming.trim))
-      .filter(array => array.size != 1 || array.head != EmptyString)
+      .filter(array => array.size != 1 || array.head.trim != EmptyString)
 }

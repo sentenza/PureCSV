@@ -18,6 +18,7 @@ import java.io.CharArrayReader
 
 import purecsv.unsafe.RecordSplitterImpl
 import org.scalatest.{FunSuite, Matchers}
+import purecsv.config.Headers
 import purecsv.config.Headers.None
 
 
@@ -43,6 +44,18 @@ class RecordSplitterSuite extends FunSuite with Matchers {
   test("RecordSplitterImpl works with custom UTF8 delimiter") {
     val reader = new CharArrayReader("foo☃bar\nbar☃foo".toCharArray)
     RecordSplitterImpl.getRecords(reader, Seq.empty, '☃', headers = None).toSeq should contain theSameElementsInOrderAs
+      Seq(Array("foo", "bar"), Array("bar", "foo"))
+  }
+
+  test("RecordSplitterImpl ignores empty lines") {
+    val reader = new CharArrayReader("foo☃bar\n\nbar☃foo\n\n".toCharArray)
+    RecordSplitterImpl.getRecords(reader, Seq.empty, '☃', headers = None).toSeq should contain theSameElementsInOrderAs
+      Seq(Array("foo", "bar"), Array("bar", "foo"))
+  }
+
+  test("RecordSplitterImpl with header ignores empty lines") {
+    val reader = new CharArrayReader("key☃value\nfoo☃bar\n\nbar☃foo\n\n".toCharArray)
+    RecordSplitterImpl.getRecords(reader, Seq("key", "value"), '☃', headers = Headers.ParseHeaders).toSeq should contain theSameElementsInOrderAs
       Seq(Array("foo", "bar"), Array("bar", "foo"))
   }
 }
