@@ -3,7 +3,7 @@ import sbt.Keys._
 lazy val buildSettings = Seq(
   organization := "io.kontainers",
   scalaVersion := "2.12.8",
-  crossScalaVersions := Seq("2.11.12", scalaVersion.value)
+  crossScalaVersions := Seq("2.11.12", "2.13.0-RC1", scalaVersion.value)
 )
 
 lazy val publishSettings = Seq(
@@ -47,9 +47,9 @@ lazy val pureCSV = project.in(file(".")).
     scalacOptions ++= Seq("-feature", "-deprecation"),
     libraryDependencies ++= Seq(
       "com.chuusai" %% "shapeless" % "2.3.3",
-      compilerPlugin("org.scalamacros" % "paradise" % "2.1.0" cross CrossVersion.full),
-      "org.scalatest" %% "scalatest" % "3.0.7" % Test,
-      "com.github.tototoshi" %% "scala-csv" % "1.3.5",
+      //compilerPlugin("org.scalamacros" % "paradise" % "2.1.0" cross CrossVersion.full),
+      "org.scalatest" %% "scalatest" % "3.0.8-RC2" % Test,
+      "com.github.tototoshi" %% "scala-csv" % "1.3.6-SNAPSHOT",
       "org.scala-lang" % "scala-reflect" % scalaVersion.value
     ),
     resolvers ++= Seq(
