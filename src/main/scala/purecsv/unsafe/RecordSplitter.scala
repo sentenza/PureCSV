@@ -17,7 +17,6 @@ package purecsv.unsafe
 import purecsv.config.Headers.ParseHeaders
 import purecsv.config.{Headers, Trimming}
 
-
 object RecordSplitter {
   val defaultFieldSeparator = ','
   val defaultFieldSeparatorStr = defaultFieldSeparator.toString
@@ -28,22 +27,25 @@ object RecordSplitter {
 trait RecordSplitter[R] {
 
   /** Split the input [[R]] into records, where each record is a sequence of raw fields */
-  def getRecords(r: R, fieldSep: Char,
+  def getRecords(r: R,
+                 fieldSep: Char,
                  quoteChar: Char,
                  headers: Headers,
                  trimming: Trimming,
-                 fields: Seq[String]): Iterator[Iterable[String]]
+                 fields: Seq[String],
+                 headerMapping: Map[String, String]): Iterator[Iterable[String]]
 
   /**
-   * Like [[getRecords(R, Char, Char, Int):Iterator[Iterable[String]]*]] but with all parameters except the first set
-   * to defaults and first line set to 0
-   */
+    * Like [[getRecords(R, Char, Char, Int):Iterator[Iterable[String]]*]] but with all parameters except the first set
+    * to defaults and first line set to 0
+    */
   def getRecords(r: R,
                  fields: Seq[String],
                  fieldSep: Char = RecordSplitter.defaultFieldSeparator,
                  quoteChar: Char = RecordSplitter.defaultQuoteChar,
                  headers: Headers = ParseHeaders,
-                 trimming: Trimming = Trimming.NoAction): Iterator[Iterable[String]] = {
-    getRecords(r, fieldSep, quoteChar, headers, trimming, fields)
+                 trimming: Trimming = Trimming.NoAction,
+                 headerMapping: Map[String, String] = Map.empty): Iterator[Iterable[String]] = {
+    getRecords(r, fieldSep, quoteChar, headers, trimming, fields, headerMapping)
   }
 }

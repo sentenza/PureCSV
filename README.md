@@ -89,6 +89,21 @@ res2: List[String] = List(name,address, "alice","wonderland")
 scala> CSVReader[Address].readCSVFromFileName("/tmp/example.csv", headers = Headers.ReadAndIgnore)
 res1: List[Address] = List(Address(alice,wonderland))
 ```
+
+An optional header -> field mapping can be provided when reading a CSV.
+
+```scala
+scala> import purecsv.safe._
+scala> case class Address(name: String, address: String)
+scala> val csv = """address,full name
+     | wonderland,alice""".stripMargin
+csv: String =
+address,full name
+wonderland,alice
+scala> CSVReader[Address].readCSVFromString(csv, headerMapping = Map("full name" -> "name"))
+res1: List[scala.util.Try[Address]] = List(Success(Address(alice,wonderland)))
+```
+
 ### Headers ###
 
 By default purecsv assumes that headers are present in csv that is being read (headers is set by default to Headers.ParseHeaders). 
