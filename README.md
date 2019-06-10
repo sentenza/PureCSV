@@ -33,7 +33,7 @@ resolvers += Resolver.sonatypeRepo("releases")
 libraryDependencies += "io.kontainers" %% "purecsv" % "0.3.2"
 ```
 
-The library works for both Scala 2.11.x and 2.12.x.
+The library works for Scala 2.11.x, 2.12.x and 2.13.x.
 
 ## Use the library ##
 
