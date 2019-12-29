@@ -47,13 +47,8 @@ lazy val pureCSV = project.in(file(".")).
     scalacOptions ++= Seq("-feature", "-deprecation"),
     libraryDependencies ++= Seq(
       "com.chuusai" %% "shapeless" % "2.3.3",
-      //compilerPlugin("org.scalamacros" % "paradise" % "2.1.0" cross CrossVersion.full),
       "org.scalatest" %% "scalatest" % "3.1.0" % Test,
       "com.github.tototoshi" %% "scala-csv" % "1.3.6",
       "org.scala-lang" % "scala-reflect" % scalaVersion.value
-    ),
-    resolvers ++= Seq(
-      Resolver.sonatypeRepo("releases"),
-      Resolver.sonatypeRepo("snapshots")
     )
   )
