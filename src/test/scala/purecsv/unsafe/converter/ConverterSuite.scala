@@ -16,15 +16,16 @@ package purecsv.unsafe.converter
 
 import java.util.UUID
 
+import org.scalatest.funsuite.AnyFunSuite
+import org.scalatest.matchers.should.Matchers
 import purecsv.unsafe.converter.defaults.rawfields._
 import purecsv.unsafe.converter.defaults.string._
 import purecsv.util.serializeAndDeserialize
-import org.scalatest.{FunSuite, Matchers}
 import shapeless.{::, Generic, HNil}
 
 case class Event(ts: Long, msg: String)
 
-class ConverterSuite extends FunSuite with Matchers {
+class ConverterSuite extends AnyFunSuite with Matchers {
 
   test("conversion String <-> Boolean works") {
     StringConverter[Boolean].to(true) should be ("true")

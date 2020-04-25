@@ -16,13 +16,14 @@ package purecsv
 
 import java.io.CharArrayReader
 
+import org.scalatest.funsuite.AnyFunSuite
+import org.scalatest.matchers.should.Matchers
 import purecsv.unsafe.RecordSplitterImpl
-import org.scalatest.{FunSuite, Matchers}
 import purecsv.config.Headers
 import purecsv.config.Headers.None
 
 
-class RecordSplitterSuite extends FunSuite with Matchers {
+class RecordSplitterSuite extends AnyFunSuite with Matchers {
   test("RecordSplitterImpl works with no records") {
     val reader = new CharArrayReader("".toCharArray)
     RecordSplitterImpl.getRecords(reader, Seq.empty, headers = None).toSeq should contain theSameElementsInOrderAs

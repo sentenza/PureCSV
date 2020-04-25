@@ -17,14 +17,14 @@ package purecsv.unsafe
 import java.io.CharArrayReader
 import java.nio.file.Files
 
-import purecsv.unsafe._
-import purecsv.util.serializeAndDeserialize
-import org.scalatest.{FunSuite, Matchers}
+import org.scalatest.funsuite.AnyFunSuite
+import org.scalatest.matchers.should.Matchers
 import purecsv.config.Headers
+import purecsv.util.serializeAndDeserialize
 
 case class Event(ts: Long, msg: String, user: Option[Int])
 
-class unsafeSuite extends FunSuite with Matchers {
+class unsafeSuite extends AnyFunSuite with Matchers {
 
   private val events = Seq(Event(1,"foo",None),Event(2,"bar",Some(1)))
   private val rawEvents = Seq("1,foo,", "2,bar,1")

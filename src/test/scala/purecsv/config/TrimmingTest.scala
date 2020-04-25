@@ -1,8 +1,9 @@
 package purecsv.config
 
-import org.scalatest.{FunSuite, MustMatchers}
+import org.scalatest.funsuite.AnyFunSuite
+import org.scalatest.matchers.must.Matchers
 
-class TrimmingTest extends FunSuite with MustMatchers {
+class TrimmingTest extends AnyFunSuite with Matchers {
   test("no action should return same string") {
     Trimming.NoAction.trim("   some value     ") mustBe "   some value     "
   }

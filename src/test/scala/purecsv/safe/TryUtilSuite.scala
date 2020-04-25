@@ -14,10 +14,10 @@
  */
 package purecsv.safe
 
-import org.scalatest.{Matchers, FunSuite}
+import org.scalatest.funsuite.AnyFunSuite
+import org.scalatest.matchers.should.Matchers
 
 import scala.util.{Failure, Success}
-
 
 class MyException(val s: String) extends RuntimeException(s) {
   override def equals(o: Any): Boolean = o match {
@@ -26,7 +26,7 @@ class MyException(val s: String) extends RuntimeException(s) {
   }
 }
 
-class TryUtilSuite extends FunSuite with Matchers {
+class TryUtilSuite extends AnyFunSuite with Matchers {
   import tryutil._
 
   def failure(s: String) = Failure(new MyException(s))

@@ -1,13 +1,14 @@
 package purecsv.safe
 
-import org.scalatest.{FlatSpec, FunSuite, MustMatchers}
+import org.scalatest.funsuite.AnyFunSuite
+import org.scalatest.matchers.must.Matchers
 import purecsv.safe._
 import purecsv.config.Trimming
 import purecsv.config.Trimming.{NoAction, TrimAll, TrimEmpty}
 
 import scala.util.Success
 
-class trimmingSuite extends FunSuite with MustMatchers {
+class trimmingSuite extends AnyFunSuite with Matchers {
   private final case class Account(id: Int, name: String, surname: Option[String])
 
   test("should convert string containing whitespace only to none when trimming empty") {

@@ -17,15 +17,16 @@ package purecsv.safe
 import java.io.CharArrayReader
 import java.nio.file.Files
 
+import org.scalatest.funsuite.AnyFunSuite
+import org.scalatest.matchers.should.Matchers
 import purecsv.safe._
 import purecsv.safe.tryutil._
-import org.scalatest.{FunSuite, Matchers}
 import purecsv.config.Headers
 import purecsv.config.Trimming.NoAction
 
 import scala.util.Success
 
-class customerDelimiterSafeSuite extends FunSuite with Matchers {
+class customerDelimiterSafeSuite extends AnyFunSuite with Matchers {
   case class Event(ts: Long, msg: String, user: Option[Int])
   private val events = Seq(Event(1,"foo",None),Event(2,"bar",Some(1)))
   private val rawEvents = Seq("1|foo|","2|bar|1")

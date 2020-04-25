@@ -1,12 +1,14 @@
 package purecsv.safe
 
-import org.scalatest._
+import org.scalatest.TryValues
+import org.scalatest.funsuite.AnyFunSuite
+import org.scalatest.matchers.must.Matchers
 import purecsv.config.{Headers, Trimming}
 import purecsv.config.Trimming.NoAction
 
 import scala.util.Success
 
-class absentColumnsSuite extends FunSuite with MustMatchers with TryValues {
+class absentColumnsSuite extends AnyFunSuite with Matchers with TryValues {
   final case class TestAccount(id: Int, name: String, surname: Option[String])
 
   test("should set none for the missing column") {

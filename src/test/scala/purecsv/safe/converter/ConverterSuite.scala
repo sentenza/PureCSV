@@ -16,16 +16,18 @@ package purecsv.safe.converter
 
 import java.util.UUID
 
-import org.scalatest.{FunSuite, Matchers, TryValues}
+import org.scalatest.funsuite.AnyFunSuite
+import org.scalatest.TryValues
+import org.scalatest.matchers.should.Matchers
 import purecsv.safe.converter.defaults.string._
 import purecsv.util.serializeAndDeserialize
 import shapeless.{::, Generic, HNil}
 
-import scala.util.{Failure, Success}
+import scala.util.Success
 
 case class Event(ts: Long, msg: String, user: Option[Int])
 
-class ConverterSuite extends FunSuite with Matchers with TryValues {
+class ConverterSuite extends AnyFunSuite with Matchers with TryValues {
 
   test("conversion String -> Try[Boolean] works") {
     StringConverter[Boolean].tryFrom("false") should be (Success(false))

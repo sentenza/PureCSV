@@ -1,11 +1,12 @@
 package purecsv.safe
 
-import org.scalatest.{FunSuite, MustMatchers}
+import org.scalatest.funsuite.AnyFunSuite
+import org.scalatest.matchers.must.Matchers
 import purecsv.config.Headers
 
 import scala.util.Success
 
-class headersSuite extends FunSuite with MustMatchers {
+class headersSuite extends AnyFunSuite with Matchers {
   private final case class TestUser(id: Int, name: String, email: Option[String])
 
   test("should parse csv without header") {
