@@ -22,7 +22,7 @@ package object rawfields {
 
   import purecsv.unsafe.converter.RawFieldsConverter
 
-  implicit val deriveHNil = new RawFieldsConverter[HNil] {
+  implicit val deriveHNil: RawFieldsConverter[HNil] = new RawFieldsConverter[HNil] {
     override def from(s: Seq[String]): HNil = s match {
       case Nil => HNil
       case _       => throw new IllegalArgumentException(s"'$s' cannot be converted to HNil")

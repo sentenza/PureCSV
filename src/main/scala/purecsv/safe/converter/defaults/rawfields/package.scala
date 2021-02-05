@@ -28,7 +28,7 @@ package object rawfields {
     Failure(new IllegalArgumentException(s"$what cannot be converter to a value of type $typ"))
   }
 
-  implicit val deriveHNil = new RawFieldsConverter[HNil] {
+  implicit val deriveHNil: RawFieldsConverter[HNil] = new RawFieldsConverter[HNil] {
     override def tryFrom(s: Seq[String]): Try[HNil] = s match {
       case Nil => Success(HNil)
       case _   => illegalConversion(s.mkString("[",", ","]"), "HNil")
