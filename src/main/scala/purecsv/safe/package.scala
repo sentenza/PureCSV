@@ -25,7 +25,7 @@ import purecsv.util.ClassUtil.caseClassParams
 import purecsv.util.FileUtil
 import shapeless.{::, Generic, HList, HNil}
 
-import scala.reflect.runtime.universe.TypeTag
+import scala.reflect.ClassTag
 import scala.util.Try
 
 package object safe {
@@ -72,7 +72,7 @@ package object safe {
         delimiter: Char = RecordSplitter.defaultFieldSeparator,
         trimming: Trimming = NoAction,
         headers: Headers = ParseHeaders,
-        headerMapping: Map[String, String] = Map.empty)(implicit typeTag: TypeTag[A]): Iterator[Try[A]] = {
+        headerMapping: Map[String, String] = Map.empty)(implicit classTag: ClassTag[A]): Iterator[Try[A]] = {
       RecordSplitterImpl
         .getRecords(r,
                     caseClassParams[A],
@@ -88,7 +88,7 @@ package object safe {
         delimiter: Char = RecordSplitter.defaultFieldSeparator,
         trimming: Trimming = NoAction,
         headers: Headers = ParseHeaders,
-        headerMapping: Map[String, String] = Map.empty)(implicit typeTag: TypeTag[A]): List[Try[A]] = {
+        headerMapping: Map[String, String] = Map.empty)(implicit classTag: ClassTag[A]): List[Try[A]] = {
       val r = new StringReader(s)
       try {
         readCSVFromReader(r, delimiter, trimming, headers, headerMapping).toList
@@ -101,7 +101,7 @@ package object safe {
                         delimiter: Char = RecordSplitter.defaultFieldSeparator,
                         trimming: Trimming = NoAction,
                         headers: Headers = ParseHeaders,
-                        headerMapping: Map[String, String] = Map.empty)(implicit typeTag: TypeTag[A]): List[Try[A]] = {
+                        headerMapping: Map[String, String] = Map.empty)(implicit classTag: ClassTag[A]): List[Try[A]] = {
       val r = FileUtil.createReader(f)
       try {
         readCSVFromReader(r, delimiter, trimming, headers, headerMapping).toList
@@ -115,7 +115,7 @@ package object safe {
         delimiter: Char = RecordSplitter.defaultFieldSeparator,
         trimming: Trimming = NoAction,
         headers: Headers = ParseHeaders,
-        headerMapping: Map[String, String] = Map.empty)(implicit typeTag: TypeTag[A]): List[Try[A]] = {
+        headerMapping: Map[String, String] = Map.empty)(implicit classTag: ClassTag[A]): List[Try[A]] = {
       readCSVFromFile(new File(fileName), delimiter, trimming, headers, headerMapping)
     }
 
