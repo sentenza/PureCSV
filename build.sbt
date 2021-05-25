@@ -2,13 +2,13 @@ import sbt.Keys._
 
 lazy val buildSettings = Seq(
   organization := "io.kontainers",
-  scalaVersion := "2.13.5",
-  crossScalaVersions := Seq("2.11.12", "2.12.12", scalaVersion.value)
+  scalaVersion := "2.13.6",
+  crossScalaVersions := Seq("2.11.12", "2.12.13", scalaVersion.value)
 )
 
 lazy val publishSettings = Seq(
   publishMavenStyle := true,
-  publishArtifact in Test := false,
+  Test/ publishArtifact := false,
   releasePublishArtifactsAction := PgpKeys.publishSigned.value,
   publishTo := Some(
     if (isSnapshot.value)
