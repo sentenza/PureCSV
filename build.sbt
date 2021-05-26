@@ -46,7 +46,7 @@ lazy val pureCSV = project.in(file(".")).
     javacOptions ++= Seq("-source", "1.8", "-target", "1.8"),
     scalacOptions ++= Seq("-feature", "-deprecation"),
     libraryDependencies ++= Seq(
-      "com.chuusai" %% "shapeless" % "2.3.5",
+      "com.chuusai" %% "shapeless" % "2.3.6",
       "com.github.tototoshi" %% "scala-csv" % "1.3.8",
       "org.scalatest" %% "scalatest" % "3.2.9" % Test
     )
