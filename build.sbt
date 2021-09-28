@@ -3,7 +3,7 @@ import sbt.Keys._
 lazy val buildSettings = Seq(
   organization := "io.kontainers",
   scalaVersion := "2.13.6",
-  crossScalaVersions := Seq("2.11.12", "2.12.13", scalaVersion.value)
+  crossScalaVersions := Seq("2.11.12", "2.12.15", scalaVersion.value)
 )
 
 lazy val publishSettings = Seq(
@@ -48,6 +48,6 @@ lazy val pureCSV = project.in(file(".")).
     libraryDependencies ++= Seq(
       "com.chuusai" %% "shapeless" % "2.3.7",
       "com.github.tototoshi" %% "scala-csv" % "1.3.8",
-      "org.scalatest" %% "scalatest" % "3.2.9" % Test
+      "org.scalatest" %% "scalatest" % "3.2.10" % Test
     )
   )
