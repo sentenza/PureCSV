@@ -32,7 +32,7 @@ the project libraryDependencies:
 ```scala
 resolvers += Resolver.sonatypeRepo("releases")
 
-libraryDependencies += "io.kontainers" %% "purecsv" % "0.4.0"
+libraryDependencies += "io.kontainers" %% "purecsv" % "0.4.1"
 ```
 
 The library works for Scala 2.11.x, 2.12.x and 2.13.x.
