@@ -3,6 +3,8 @@
 [![Build Status](https://travis-ci.org/melrief/PureCSV.svg?branch=master)](https://travis-ci.org/melrief/PureCSV)
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.github.melrief/purecsv_2.11/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.github.melrief/purecsv_2.11)
 
+**IMPORTANT: This project is not supported anymore.**
+
 PureCSV is a Scala library for working with the CSV format. The
 library gets rid of most of the boilerplate required to work with CSV
 
