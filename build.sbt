@@ -3,7 +3,9 @@ import sbt.Keys._
 lazy val buildSettings = Seq(
   organization := "com.github.melrief",
   scalaVersion := "2.12.1",
-  crossScalaVersions := Seq("2.10.5", "2.11.8", "2.12.1")
+  crossScalaVersions := Seq("2.10.5", "2.11.8", "2.12.1"),
+  javacOptions ++= Seq("-source", "1.8", "-target", "1.8"),
+  scalacOptions ++= Seq("-feature", "-deprecation")
 )
 
 lazy val publishSettings = Seq(
@@ -44,19 +46,15 @@ lazy val noPublishSettings = Seq(
 )
 
 lazy val root = project.in(file(".")).
-  aggregate(pureCSVJVM, pureCSVJS).
+  aggregate(pureCSVJVM, pureCSVJS, refinedJVM, refinedJS).
   settings(buildSettings).
-  settings(publishSettings).
-  settings(noPublishSettings)
+  settings(publishSettings)
 
-lazy val pureCSV = crossProject.crossType(CrossType.Full).in(new File(".")).
+lazy val pureCSV = crossProject.crossType(CrossType.Full).in(file("purecsv")).
   settings(buildSettings).
   settings(publishSettings).
   settings(
     name := "purecsv",
-    version := "0.1.1",
-    javacOptions ++= Seq("-source", "1.8", "-target", "1.8"),
-    scalacOptions ++= Seq("-feature", "-deprecation"),
     libraryDependencies ++= Seq(
       "com.chuusai" %% "shapeless" % "2.3.2",
       compilerPlugin("org.scalamacros" % "paradise" % "2.1.0" cross CrossVersion.full),
@@ -76,3 +74,19 @@ lazy val pureCSV = crossProject.crossType(CrossType.Full).in(new File(".")).
 
 lazy val pureCSVJVM = pureCSV.jvm
 lazy val pureCSVJS  = pureCSV.js
+
+lazy val refined = (crossProject.crossType(CrossType.Full) in file("modules/refined")).
+  dependsOn(pureCSV).
+  dependsOn(pureCSV % "test->test").
+  settings(buildSettings).
+  settings(publishSettings).
+  settings(
+    name := "purecsv-refined",
+    libraryDependencies ++= Seq(
+      "eu.timepit" %% "refined" % "0.8.4")
+  ).
+  jvmSettings().
+  jsSettings()
+
+lazy val refinedJVM = refined.jvm
+lazy val refinedJS  = refined.js
