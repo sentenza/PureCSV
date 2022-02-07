@@ -4,7 +4,7 @@
   * for easier dependency updates monitoring
   * @see https://github.com/rtimush/sbt-updates
   */
-addSbtPlugin("com.timushev.sbt" % "sbt-updates" % "0.6.1")
+addSbtPlugin("com.timushev.sbt" % "sbt-updates" % "0.6.2")
 
 addSbtPlugin("com.github.sbt" % "sbt-release" % "1.1.0")
 
