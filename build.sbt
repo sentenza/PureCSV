@@ -47,7 +47,6 @@ lazy val pureCSV = project.in(file(".")).
   settings(publishSettings).
   settings(
     name := "purecsv",
-    javacOptions ++= Seq("-source", "1.8", "-target", "1.8"),
     scalacOptions ++= Seq("-feature", "-deprecation"),
     libraryDependencies ++= Seq(
       "com.chuusai" %% "shapeless" % "2.3.7",
