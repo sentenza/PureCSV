@@ -1,7 +1,9 @@
 # PureCSV #
 
-[![Build Status](https://travis-ci.org/melrief/PureCSV.svg?branch=master)](https://travis-ci.org/melrief/PureCSV)
-[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.github.melrief/purecsv_2.11/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.github.melrief/purecsv_2.11)
+[![Build Status](https://travis-ci.org/kontainers/PureCSV.svg?branch=master)](https://travis-ci.org/kontainers/PureCSV)
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/io.kontainers/purecsv_2.13/badge.svg)](https://maven-badges.herokuapp.com/maven-central/io.kontainers/purecsv_2.13)
+
+This is a fork of https://github.com/melrief/PureCSV with Scala 2.13 support and a few extra features.
 
 **IMPORTANT: This project is not supported anymore.**
 
@@ -32,10 +34,10 @@ the project libraryDependencies:
 ```scala
 resolvers += Resolver.sonatypeRepo("releases")
 
-libraryDependencies += "com.github.melrief" %% "purecsv" % "0.1.1"
+libraryDependencies += "io.kontainers" %% "purecsv" % "1.3.10"
 ```
 
-The library works for both Scala 2.11.x and 2.12.x.
+The library works for Scala 2.12.x and 2.13.x.
 
 ## Use the library ##
 
@@ -88,10 +90,35 @@ scala> case class Address(name: String, address: String)
 scala> Seq(Address("alice","wonderland")).writeCSVToFileName("/tmp/example.csv", header=Some(Seq("name","address")))
 scala> scala.io.Source.fromFile("/tmp/example.csv").getLines.toList
 res2: List[String] = List(name,address, "alice","wonderland")
-scala> CSVReader[Address].readCSVFromFileName("/tmp/example.csv", skipHeader=true)
+scala> CSVReader[Address].readCSVFromFileName("/tmp/example.csv", headers = Headers.ReadAndIgnore)
 res1: List[Address] = List(Address(alice,wonderland))
 ```
 
+An optional header -> field mapping can be provided when reading a CSV.
+
+```scala
+scala> import purecsv.safe._
+scala> case class Address(name: String, address: String)
+scala> val csv = """address,full name
+     | wonderland,alice""".stripMargin
+csv: String =
+address,full name
+wonderland,alice
+scala> CSVReader[Address].readCSVFromString(csv, headerMapping = Map("full name" -> "name"))
+res1: List[scala.util.Try[Address]] = List(Success(Address(alice,wonderland)))
+```
+
+### Headers ###
+
+By default purecsv assumes that headers are present in csv that is being read (headers is set by default to Headers.ParseHeaders). 
+For Headers.ParseHeaders ordering and number (value for absent columns will be set to None / empty string) of columns in csv does not matter.
+
+Other options for Headers are
+* Headers.None - csv does not contain headers
+* Headers.ReadAndIgnore - csv contains headers that should be skipped
+
+In both cases ordering of columns matters.
+ 
 
 ### Reading from CSV: Safe vs Unsafe ###
 
@@ -146,9 +173,7 @@ successfully while record 2 and 4 were not.
 
 PureCSV has been designed with flexibility and extensibility in mind. It is possible
 to add new field types as well as change the way standard types are read
-from String. It is also possible to change the way CSV is parsed, right now it
-uses [OpenCSV](http://opencsv.sourceforge.net/), and, more deeply, it is possible
-to work with different raw data than String, such as binary data.
+from String. It is also possible to change the way CSV is parsed.
 
 ### Add new field types ###
 
@@ -156,7 +181,7 @@ to work with different raw data than String, such as binary data.
 possible to convert their values from/to `String`. To add a new type `A`, you have
 to supply a `purecsv.safe.converter.StringConverter[A]`.
 You can have a look at the
-[defaults string converters](https://github.com/melrief/PureCSV/blob/master/shared/src/main/scala/purecsv/safe/converter/defaults/string/package.scala)
+[defaults string converters](https://github.com/kontainers/PureCSV/blob/master/shared/src/main/scala/purecsv/safe/converter/defaults/string/package.scala)
 to see how this is done for primitive types.
 For completeness, we can do an example showing how to create a `StringConverter`
 for non-trivial types, like [ISO 8601 for dates](http://en.wikipedia.org/wiki/ISO_8601).

@@ -1,14 +1,15 @@
 import sbt.Keys._
 
 lazy val buildSettings = Seq(
-  organization := "com.github.melrief",
-  scalaVersion := "2.12.1",
-  crossScalaVersions := Seq("2.10.5", "2.11.8", "2.12.1")
+  organization := "io.kontainers",
+  scalaVersion := "2.13.8",
+  crossScalaVersions := Seq("2.12.15", scalaVersion.value)
 )
 
 lazy val publishSettings = Seq(
   publishMavenStyle := true,
-  publishArtifact in Test := false,
+  Test/ publishArtifact := false,
+  releasePublishArtifactsAction := PgpKeys.publishSigned.value,
   publishTo := Some(
     if (isSnapshot.value)
       Opts.resolver.sonatypeSnapshots
@@ -16,7 +17,7 @@ lazy val publishSettings = Seq(
       Opts.resolver.sonatypeStaging),
     pomIncludeRepository := { x => false },
     pomExtra := (
-    <url>https://github.com/melrief/PureCSV</url>
+    <url>https://github.com/kontainers/PureCSV</url>
       <licenses>
         <license>
           <name>Apache2</name>
@@ -25,10 +26,14 @@ lazy val publishSettings = Seq(
         </license>
       </licenses>
       <scm>
-        <url>git@github.com:melrief/PureCSV.git</url>
-        <connection>scm:git:git@github.com:melrief/PureCSV.git</connection>
+        <url>git@github.com:kontainers/PureCSV.git</url>
+        <connection>scm:git:git@github.com:kontainers/PureCSV.git</connection>
       </scm>
       <developers>
+        <developer>
+          <id>sentenza</id>
+          <name>Alfredo Torre</name>
+        </developer>
         <developer>
           <id>melrief</id>
           <name>Mario Pastorelli</name>
@@ -37,42 +42,15 @@ lazy val publishSettings = Seq(
   )
 )
 
-lazy val noPublishSettings = Seq(
-  publish := { },
-  publishLocal := { },
-  publishArtifact := false
-)
-
-lazy val root = project.in(file(".")).
-  aggregate(pureCSVJVM, pureCSVJS).
-  settings(buildSettings).
-  settings(publishSettings).
-  settings(noPublishSettings)
-
-lazy val pureCSV = crossProject.crossType(CrossType.Full).in(new File(".")).
+lazy val pureCSV = project.in(file(".")).
   settings(buildSettings).
   settings(publishSettings).
   settings(
     name := "purecsv",
-    version := "0.1.1",
-    javacOptions ++= Seq("-source", "1.8", "-target", "1.8"),
     scalacOptions ++= Seq("-feature", "-deprecation"),
     libraryDependencies ++= Seq(
-      "com.chuusai" %% "shapeless" % "2.3.2",
-      compilerPlugin("org.scalamacros" % "paradise" % "2.1.0" cross CrossVersion.full),
-      "org.scalatest" %% "scalatest" % "3.0.1" % Test,
-      "com.github.marklister" %%% "product-collections" % "1.4.5"
-    ),
-    resolvers ++= Seq(
-      Resolver.sonatypeRepo("releases"),
-      Resolver.sonatypeRepo("snapshots")
+      "com.chuusai" %% "shapeless" % "2.3.7",
+      "com.github.tototoshi" %% "scala-csv" % "1.3.10",
+      "org.scalatest" %% "scalatest" % "3.2.11" % Test
     )
-  ).
-  jvmSettings(
-    libraryDependencies += "net.sf.opencsv" % "opencsv" % "2.3"
-  ).
-  jsSettings(
   )
-
-lazy val pureCSVJVM = pureCSV.jvm
-lazy val pureCSVJS  = pureCSV.js
