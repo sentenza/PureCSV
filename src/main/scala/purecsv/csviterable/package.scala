@@ -19,11 +19,9 @@ import java.io.{File, PrintWriter}
 import purecsv.unsafe.RecordSplitter.defaultFieldSeparatorStr
 import purecsv.unsafe.converter.Converter
 
-
 package object csviterable {
 
-
-  implicit class CSVRecord[A,R <: Converter[A,Seq[String]]](a: A)(implicit rfc: R) {
+  implicit class CSVRecord[A, R <: Converter[A, Seq[String]]](a: A)(implicit rfc: R) {
     def toCSV(sep: String = defaultFieldSeparatorStr): String =
       rfc.to(a).mkString(sep)
   }
@@ -32,11 +30,14 @@ package object csviterable {
    * Helper class that adds methods for converting and writing an Iterable of [[A]] into CSV format.
    *
    * @param iter
-   * @param rfc The implicit class that allows converting [[A]] to a [[Seq]]
-   * @tparam A The type that can be converted to a CSV record
-   * @tparam R The type of the converter [[A]] <-> [[Seq]]
+   * @param rfc
+   *   The implicit class that allows converting [[A]] to a [[Seq]]
+   * @tparam A
+   *   The type that can be converted to a CSV record
+   * @tparam R
+   *   The type of the converter [[A]] <-> [[Seq]]
    */
-  implicit class CSVIterable[A,R <: Converter[A,Seq[String]]](iter: Iterable[A])(implicit rfc: R) {
+  implicit class CSVIterable[A, R <: Converter[A, Seq[String]]](iter: Iterable[A])(implicit rfc: R) {
 
     /** Convert all the values in [[iter]] into CSV lines */
     def toCSVLines(sep: String = defaultFieldSeparatorStr): Iterable[String] =
@@ -48,9 +49,12 @@ package object csviterable {
     /**
      * Convert [[iter]] to CSV lines and then write them into the [[PrintWriter]]
      *
-     * @param writer Where to write the CSV lines
-     * @param sep The CSV separator
-     * @param header An optional header. If it is set, then it is printed as first line
+     * @param writer
+     *   Where to write the CSV lines
+     * @param sep
+     *   The CSV separator
+     * @param header
+     *   An optional header. If it is set, then it is printed as first line
      */
     def writeCSVTo(writer: PrintWriter, sep: String, header: Option[Seq[String]]): Unit = {
       header.foreach(h => writer.println(h.mkString(sep)))
@@ -58,7 +62,10 @@ package object csviterable {
     }
 
     /** @see [[writeCSVTo]] */
-    def writeCSVToFile(file: File, sep: String = defaultFieldSeparatorStr, header: Option[Seq[String]] = None): Unit = {
+    def writeCSVToFile(file: File,
+                       sep: String = defaultFieldSeparatorStr,
+                       header: Option[Seq[String]] = None
+    ): Unit = {
       val writer = new PrintWriter(file, "utf-8")
       try {
         this.writeCSVTo(writer, sep, header)
@@ -68,7 +75,10 @@ package object csviterable {
     }
 
     /** @see [[writeCSVToFile(File,String,Option[Seq[String]]):Unit*]] */
-    def writeCSVToFileName(fileName: String, sep: String = defaultFieldSeparatorStr, header: Option[Seq[String]] = None): Unit = {
+    def writeCSVToFileName(fileName: String,
+                           sep: String = defaultFieldSeparatorStr,
+                           header: Option[Seq[String]] = None
+    ): Unit = {
       writeCSVToFile(new File(fileName), sep, header)
     }
   }

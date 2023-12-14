@@ -21,8 +21,8 @@ import scala.util.{Failure, Success}
 
 class MyException(val s: String) extends RuntimeException(s) {
   override def equals(o: Any): Boolean = o match {
-    case e:MyException => s.equals(e.s)
-    case _ => false
+    case e: MyException => s.equals(e.s)
+    case _              => false
   }
 }
 
@@ -32,12 +32,12 @@ class TryUtilSuite extends AnyFunSuite with Matchers {
   def failure(s: String): Failure[RuntimeException] = Failure(new MyException(s))
 
   test("getSuccessesAndFailures partition an Iterator[Try[A]] into successes and failures") {
-    val startingSuccesses = Seq(Success(1),Success(2))
-    val startingFailures = Seq(failure("3"),failure("4"))
-    val expectedSuccesses = Seq(1 -> 1, 2 -> 2)
-    val expectedFailures = Seq(3 -> new MyException("3"), 4 -> new MyException("4"))
-    val (resSuccesses,resFailures) = (startingSuccesses ++ startingFailures).getSuccessesAndFailures
-    resSuccesses should be (expectedSuccesses)
-    resFailures should be (expectedFailures)
+    val startingSuccesses           = Seq(Success(1), Success(2))
+    val startingFailures            = Seq(failure("3"), failure("4"))
+    val expectedSuccesses           = Seq(1 -> 1, 2 -> 2)
+    val expectedFailures            = Seq(3 -> new MyException("3"), 4 -> new MyException("4"))
+    val (resSuccesses, resFailures) = (startingSuccesses ++ startingFailures).getSuccessesAndFailures
+    resSuccesses should be(expectedSuccesses)
+    resFailures should be(expectedFailures)
   }
 }

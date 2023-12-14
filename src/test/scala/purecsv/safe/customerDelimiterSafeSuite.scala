@@ -28,8 +28,8 @@ import scala.util.Success
 
 class customerDelimiterSafeSuite extends AnyFunSuite with Matchers {
   case class Event(ts: Long, msg: String, user: Option[Int])
-  private val events = Seq(Event(1,"foo",None),Event(2,"bar",Some(1)))
-  private val rawEvents = Seq("1|foo|","2|bar|1")
+  private val events    = Seq(Event(1, "foo", None), Event(2, "bar", Some(1)))
+  private val rawEvents = Seq("1|foo|", "2|bar|1")
 
   test("Converting an iterable of events to CSV lines works") {
     events.toCSVLines("|").toSeq should contain theSameElementsInOrderAs rawEvents
@@ -37,20 +37,26 @@ class customerDelimiterSafeSuite extends AnyFunSuite with Matchers {
 
   test("Reading events from a String reader works") {
     val reader = new CharArrayReader(rawEvents.mkString(System.lineSeparator()).toCharArray)
-    CSVReader[Event].readCSVFromReader(reader, '|', NoAction, Headers.None).toSeq should contain theSameElementsInOrderAs events.map(Success(_))
+    CSVReader[Event]
+      .readCSVFromReader(reader, '|', NoAction, Headers.None)
+      .toSeq should contain theSameElementsInOrderAs events.map(Success(_))
   }
 
   test("Reading events and get successes and failures works") {
     val reader = new CharArrayReader(rawEvents.mkString(System.lineSeparator()).toCharArray)
-    val (successes,failures) = CSVReader[Event].readCSVFromReader(reader, '|', NoAction, Headers.None).getSuccessesAndFailures
+    val (successes, failures) =
+      CSVReader[Event].readCSVFromReader(reader, '|', NoAction, Headers.None).getSuccessesAndFailures
     val expectedSuccesses = Seq(1 -> events(0), 2 -> events(1))
     successes should contain theSameElementsInOrderAs expectedSuccesses
-    failures should be (Seq.empty[Event])
+    failures should be(Seq.empty[Event])
   }
 
   test("Can read a file written with writeCSVToFile") {
-    val file = Files.createTempFile("casecsv",".csv").toFile
+    val file = Files.createTempFile("casecsv", ".csv").toFile
     events.writeCSVToFile(file, "☃")
-    CSVReader[Event].readCSVFromFile(file, '☃', headers = Headers.None) should contain theSameElementsInOrderAs events.map(Success(_))
+    CSVReader[Event].readCSVFromFile(file,
+                                     '☃',
+                                     headers = Headers.None
+    ) should contain theSameElementsInOrderAs events.map(Success(_))
   }
 }

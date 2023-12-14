@@ -20,8 +20,8 @@ import com.github.tototoshi.csv.{DefaultCSVFormat, CSVReader => TototoshiCSVRead
 import purecsv.config.{Headers, Trimming}
 
 /**
-  * A [[purecsv.unsafe.RecordSplitter]] that uses the scala-csv library for extracting records from a [[Reader]]
-  */
+ * A [[purecsv.unsafe.RecordSplitter]] that uses the scala-csv library for extracting records from a [[Reader]]
+ */
 object RecordSplitterImpl extends RecordSplitter[Reader] {
   private val EmptyString = ""
 
@@ -31,7 +31,8 @@ object RecordSplitterImpl extends RecordSplitter[Reader] {
                           headers: Headers,
                           trimming: Trimming,
                           fields: Seq[String],
-                          headerMapping: Map[String, String]): Iterator[Iterable[String]] = {
+                          headerMapping: Map[String, String]
+  ): Iterator[Iterable[String]] = {
     implicit val csvFormat: DefaultCSVFormat = new DefaultCSVFormat {
       override val delimiter: Char = fieldSep
       override val quoteChar: Char = quoteCharacter
@@ -53,7 +54,8 @@ object RecordSplitterImpl extends RecordSplitter[Reader] {
   private def toValuesIteratorWithHeadersOrdering(csvReader: TototoshiCSVReader,
                                                   trimming: Trimming,
                                                   fields: Seq[String],
-                                                  headerMapping: Map[String, String]) =
+                                                  headerMapping: Map[String, String]
+  ) =
     csvReader.iteratorWithHeaders
       .map(line => line.view.mapValues(trimming.trim))
       .filter(array => array.size != 1 || array.head._2.trim != EmptyString)
@@ -61,7 +63,8 @@ object RecordSplitterImpl extends RecordSplitter[Reader] {
 
   private def toValuesIteratorWithoutHeadersOrdering(csvReader: TototoshiCSVReader,
                                                      trimming: Trimming,
-                                                     linesToBeDropped: Int) =
+                                                     linesToBeDropped: Int
+  ) =
     csvReader.iterator
       .drop(linesToBeDropped)
       .map(line => line.map(trimming.trim))

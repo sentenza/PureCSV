@@ -17,20 +17,19 @@ package purecsv.safe
 import scala.collection.immutable
 import scala.util.{Failure, Success, Try}
 
-
 package object tryutil {
 
   implicit class IterableOfTry[A](iter: Iterable[Try[A]]) {
+
     /** A tuple composed by the successes and the failures */
-    lazy val getSuccessesAndFailures: (immutable.List[(Int,A)],
-                                       immutable.List[(Int,Throwable)]) = {
-      val successes = scala.collection.mutable.Buffer[(Int,A)]()
-      val failures = scala.collection.mutable.Buffer[(Int,Throwable)]()
+    lazy val getSuccessesAndFailures: (immutable.List[(Int, A)], immutable.List[(Int, Throwable)]) = {
+      val successes = scala.collection.mutable.Buffer[(Int, A)]()
+      val failures  = scala.collection.mutable.Buffer[(Int, Throwable)]()
       iter.zipWithIndex.foreach {
-        case (Success(a),i) => successes += (i+1 -> a)
-        case (Failure(f),i) => failures  += (i+1 -> f)
+        case (Success(a), i) => successes += (i + 1 -> a)
+        case (Failure(f), i) => failures += (i + 1  -> f)
       }
-      (successes.toList,failures.toList)
+      (successes.toList, failures.toList)
     }
   }
 

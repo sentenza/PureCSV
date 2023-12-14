@@ -26,7 +26,9 @@ class headersSuite extends AnyFunSuite with Matchers {
     val csv = """id,name,email
         |42,chandler,chandler@bing.com""".stripMargin
 
-    readCsv(csv, Headers.ParseHeaders) must contain only Success(TestUser(42, "chandler", Some("chandler@bing.com")))
+    readCsv(csv, Headers.ParseHeaders) must contain only Success(
+      TestUser(42, "chandler", Some("chandler@bing.com"))
+    )
   }
 
   test("should parse csv entry with headers even if fields order doesn't match class's fields order") {
@@ -48,7 +50,8 @@ class headersSuite extends AnyFunSuite with Matchers {
         |ross@geller.com,34,42,ross""".stripMargin
 
     readCsv(csv, Headers.ParseHeaders, Map("email address" -> "email")) must contain only Success(
-      TestUser(42, "ross", Some("ross@geller.com")))
+      TestUser(42, "ross", Some("ross@geller.com"))
+    )
   }
 
   private def readCsv(csv: String, headers: Headers, headerMapping: Map[String, String] = Map.empty) =

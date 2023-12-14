@@ -20,31 +20,31 @@ import purecsv.unsafe.converter.StringConverterUtils
 
 import scala.util.{Success, Try}
 
-
 package object string {
   import purecsv.safe.converter.StringConverter
   import purecsv.safe.converter.StringConverterUtils.mkStringConverter
   import purecsv.unsafe.converter.defaults.string.{strToBool, strToChar}
 
-  implicit val boolc:   StringConverter[Boolean] = mkStringConverter(s => Try(strToBool(s)),_.toString)
-  implicit val bytec:   StringConverter[Byte]    = mkStringConverter(s => Try(s.toByte),_.toString)
-  implicit val charc:   StringConverter[Char]    = mkStringConverter(s => Try(strToChar(s)),_.toString)
-  implicit val doublec: StringConverter[Double]  = mkStringConverter(s => Try(s.toDouble),_.toString)
-  implicit val floatc:  StringConverter[Float]   = mkStringConverter(s => Try(s.toFloat),_.toString)
-  implicit val intc:    StringConverter[Int]     = mkStringConverter(s => Try(s.toInt),_.toString)
-  implicit val longc:   StringConverter[Long]    = mkStringConverter(s => Try(s.toLong),_.toString)
-  implicit val shortc:  StringConverter[Short]   = mkStringConverter(s => Try(s.toShort),_.toString)
-  implicit val uuidc:   StringConverter[UUID]    = mkStringConverter(s => Try(UUID.fromString(s)),_.toString)
-  implicit val stringc: StringConverter[String]  = new StringConverter[String] {
+  implicit val boolc: StringConverter[Boolean]  = mkStringConverter(s => Try(strToBool(s)), _.toString)
+  implicit val bytec: StringConverter[Byte]     = mkStringConverter(s => Try(s.toByte), _.toString)
+  implicit val charc: StringConverter[Char]     = mkStringConverter(s => Try(strToChar(s)), _.toString)
+  implicit val doublec: StringConverter[Double] = mkStringConverter(s => Try(s.toDouble), _.toString)
+  implicit val floatc: StringConverter[Float]   = mkStringConverter(s => Try(s.toFloat), _.toString)
+  implicit val intc: StringConverter[Int]       = mkStringConverter(s => Try(s.toInt), _.toString)
+  implicit val longc: StringConverter[Long]     = mkStringConverter(s => Try(s.toLong), _.toString)
+  implicit val shortc: StringConverter[Short]   = mkStringConverter(s => Try(s.toShort), _.toString)
+  implicit val uuidc: StringConverter[UUID]     = mkStringConverter(s => Try(UUID.fromString(s)), _.toString)
+  implicit val stringc: StringConverter[String] = new StringConverter[String] {
     override def tryFrom(s: String): Try[String] = Success(s)
-    override def to(s: String): String = StringConverterUtils.quoteTextIfNecessary(s)
+    override def to(s: String): String           = StringConverterUtils.quoteTextIfNecessary(s)
   }
 
-  implicit def optionc[A](implicit ac: StringConverter[A]): StringConverter[Option[A]] = new StringConverter[Option[A]] {
-    override def tryFrom(s: String): Try[Option[A]] = s match {
-      case "" => Success(None)
-      case s  => ac.tryFrom(s).map(Some(_))
+  implicit def optionc[A](implicit ac: StringConverter[A]): StringConverter[Option[A]] =
+    new StringConverter[Option[A]] {
+      override def tryFrom(s: String): Try[Option[A]] = s match {
+        case "" => Success(None)
+        case s  => ac.tryFrom(s).map(Some(_))
+      }
+      override def to(v: Option[A]): String = v.map(ac.to).getOrElse("")
     }
-    override def to(v: Option[A]): String = v.map(ac.to).getOrElse("")
-  }
 }

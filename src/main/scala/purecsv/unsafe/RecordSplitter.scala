@@ -18,10 +18,10 @@ import purecsv.config.Headers.ParseHeaders
 import purecsv.config.{Headers, Trimming}
 
 object RecordSplitter {
-  val defaultFieldSeparator = ','
+  val defaultFieldSeparator    = ','
   val defaultFieldSeparatorStr = defaultFieldSeparator.toString
-  val defaultQuoteChar = '"'
-  val defaultQuoteStr = defaultQuoteChar.toString
+  val defaultQuoteChar         = '"'
+  val defaultQuoteStr          = defaultQuoteChar.toString
 }
 
 trait RecordSplitter[R] {
@@ -33,19 +33,21 @@ trait RecordSplitter[R] {
                  headers: Headers,
                  trimming: Trimming,
                  fields: Seq[String],
-                 headerMapping: Map[String, String]): Iterator[Iterable[String]]
+                 headerMapping: Map[String, String]
+  ): Iterator[Iterable[String]]
 
   /**
-    * Like [[getRecords(R, Char, Char, Int):Iterator[Iterable[String]]*]] but with all parameters except the first set
-    * to defaults and first line set to 0
-    */
+   * Like [[getRecords(R, Char, Char, Int):Iterator[Iterable[String]]*]] but with all parameters except the first
+   * set to defaults and first line set to 0
+   */
   def getRecords(r: R,
                  fields: Seq[String],
                  fieldSep: Char = RecordSplitter.defaultFieldSeparator,
                  quoteChar: Char = RecordSplitter.defaultQuoteChar,
                  headers: Headers = ParseHeaders,
                  trimming: Trimming = Trimming.NoAction,
-                 headerMapping: Map[String, String] = Map.empty): Iterator[Iterable[String]] = {
+                 headerMapping: Map[String, String] = Map.empty
+  ): Iterator[Iterable[String]] = {
     getRecords(r, fieldSep, quoteChar, headers, trimming, fields, headerMapping)
   }
 }

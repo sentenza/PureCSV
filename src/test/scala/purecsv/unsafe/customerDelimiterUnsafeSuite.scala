@@ -23,12 +23,11 @@ import purecsv.unsafe._
 import purecsv.config.Headers
 import purecsv.config.Trimming.NoAction
 
-
 class customerDelimiterUnsafeSuite extends AnyFunSuite with Matchers {
   case class Event(ts: Long, msg: String, user: Option[Int])
 
-  private val events = Seq(Event(1,"foo",None),Event(2,"bar",Some(1)))
-  private val rawEvents = Seq("1|foo|","2|bar|1")
+  private val events    = Seq(Event(1, "foo", None), Event(2, "bar", Some(1)))
+  private val rawEvents = Seq("1|foo|", "2|bar|1")
 
   test("Converting an iterable of events to CSV lines works") {
     events.toCSVLines("|").toSeq should contain theSameElementsInOrderAs rawEvents
@@ -36,13 +35,16 @@ class customerDelimiterUnsafeSuite extends AnyFunSuite with Matchers {
 
   test("Reading events from a String reader works") {
     val reader = new CharArrayReader(rawEvents.mkString(System.lineSeparator()).toCharArray)
-    CSVReader[Event].readCSVFromReader(reader, '|', NoAction, Headers.None).toSeq should be (events)
+    CSVReader[Event].readCSVFromReader(reader, '|', NoAction, Headers.None).toSeq should be(events)
   }
 
   test("Can read a file written with writeCSVToFile") {
-    val file = Files.createTempFile("casecsv",".csv").toFile
+    val file = Files.createTempFile("casecsv", ".csv").toFile
     file.deleteOnExit()
     events.writeCSVToFile(file, "☃")
-    CSVReader[Event].readCSVFromFile(file, '☃', headers = Headers.None) should contain theSameElementsInOrderAs events
+    CSVReader[Event].readCSVFromFile(file,
+                                     '☃',
+                                     headers = Headers.None
+    ) should contain theSameElementsInOrderAs events
   }
 }

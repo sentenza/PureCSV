@@ -30,42 +30,42 @@ case class Event(ts: Long, msg: String, user: Option[Int])
 class ConverterSuite extends AnyFunSuite with Matchers with TryValues {
 
   test("conversion String -> Try[Boolean] works") {
-    StringConverter[Boolean].tryFrom("false") should be (Success(false))
-    StringConverter[Boolean].tryFrom("1") should be (Success(true))
-    StringConverter[Boolean].tryFrom("TRUE") should be (Success(true))
+    StringConverter[Boolean].tryFrom("false") should be(Success(false))
+    StringConverter[Boolean].tryFrom("1") should be(Success(true))
+    StringConverter[Boolean].tryFrom("TRUE") should be(Success(true))
   }
 
   test("conversion String <-> Try[UUID] works") {
     val uuid = UUID.randomUUID()
-    StringConverter[UUID].tryFrom(uuid.toString) should be (Success(uuid))
-    StringConverter[UUID].tryFrom(uuid.toString.toLowerCase) should be (Success(uuid))
-    StringConverter[UUID].tryFrom(uuid.toString.toUpperCase) should be (Success(uuid))
+    StringConverter[UUID].tryFrom(uuid.toString) should be(Success(uuid))
+    StringConverter[UUID].tryFrom(uuid.toString.toLowerCase) should be(Success(uuid))
+    StringConverter[UUID].tryFrom(uuid.toString.toUpperCase) should be(Success(uuid))
   }
 
   test("conversion string -> Try[Option[Int]] works") {
-    StringConverter[Option[Int]].tryFrom("") should be (Success(None))
-    StringConverter[Option[Int]].tryFrom("1") should be (Success(Some(1)))
+    StringConverter[Option[Int]].tryFrom("") should be(Success(None))
+    StringConverter[Option[Int]].tryFrom("1") should be(Success(Some(1)))
   }
 
   test("conversion String -> HNil works") {
-    RawFieldsConverter[HNil].tryFrom(Seq.empty) should be (Success(HNil))
+    RawFieldsConverter[HNil].tryFrom(Seq.empty) should be(Success(HNil))
   }
 
   test("conversion String -> HList works") {
     val conv = RawFieldsConverter[String :: Int :: HNil]
-    conv.tryFrom(Seq("foo","2")) should be (Success("foo" :: 2 :: HNil))
+    conv.tryFrom(Seq("foo", "2")) should be(Success("foo" :: 2 :: HNil))
   }
 
   test("conversion String -> case class works") {
     val conv = RawFieldsConverter[Event]
-    conv.tryFrom(Seq("2","barfoo","")) should be (Success(Event(2,"barfoo",None)))
-    conv.tryFrom(Seq("2","barfoo","1")) should be (Success(Event(2,"barfoo",Some(1))))
+    conv.tryFrom(Seq("2", "barfoo", "")) should be(Success(Event(2, "barfoo", None)))
+    conv.tryFrom(Seq("2", "barfoo", "1")) should be(Success(Event(2, "barfoo", Some(1))))
   }
 
   class Event2(val ts: Long, var msg: String) {
     override def equals(o: Any): Boolean = o match {
-      case other:Event2 => (this.ts == other.ts && this.msg == other.msg)
-      case _ => false
+      case other: Event2 => (this.ts == other.ts && this.msg == other.msg)
+      case _             => false
     }
     override def toString: String = s"Event($ts, $msg)"
   }
@@ -81,25 +81,25 @@ class ConverterSuite extends AnyFunSuite with Matchers with TryValues {
 
   test("conversion String -> class with custom Generic works") {
     val conv = RawFieldsConverter[Event2]
-    conv.tryFrom(Seq("2","bar")) should be (Success(new Event2(2,"bar")))
+    conv.tryFrom(Seq("2", "bar")) should be(Success(new Event2(2, "bar")))
 
     // Strings are not quoted
-    val event = new Event2(1,"foo")
-    conv.tryFrom(conv.to(event)) should be (Success(event))
+    val event = new Event2(1, "foo")
+    conv.tryFrom(conv.to(event)) should be(Success(event))
   }
 
   test("conversion String -> class with custom Generic works - with quotes") {
     val conv = RawFieldsConverter[Event2]
     // Strings are quoted
-    val event = new Event2(1,"""with "quotes"""")
-    conv.to(event) should be (Seq("1", "\"with \"\"quotes\"\"\""))
+    val event = new Event2(1, """with "quotes"""")
+    conv.to(event) should be(Seq("1", "\"with \"\"quotes\"\"\""))
   }
 
   test("serializing a RawFieldsConverter should work") {
-    val conv = RawFieldsConverter[Event]
+    val conv             = RawFieldsConverter[Event]
     val convDeserialized = serializeAndDeserialize(conv)
 
-    convDeserialized.tryFrom(Seq("2","barfoo","")) should be (Success(Event(2,"barfoo",None)))
-    convDeserialized.tryFrom(Seq("2","barfoo","1")) should be (Success(Event(2,"barfoo",Some(1))))
+    convDeserialized.tryFrom(Seq("2", "barfoo", "")) should be(Success(Event(2, "barfoo", None)))
+    convDeserialized.tryFrom(Seq("2", "barfoo", "1")) should be(Success(Event(2, "barfoo", Some(1))))
   }
 }
