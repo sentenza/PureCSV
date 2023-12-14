@@ -31,7 +31,7 @@ case class Event(ts: Long, msg: String, user: Option[Int])
 
 class safeSuite extends AnyFunSuite with Matchers {
 
-  val events = Seq(Event(1,"foo",None),Event(2,"bar",Some(1)))
+  val events    = Seq(Event(1, "foo", None), Event(2, "bar", Some(1)))
   val rawEvents = Seq("1,foo,", "2,bar,1")
 
   test("Converting an iterable of events to CSV lines works") {
@@ -40,33 +40,35 @@ class safeSuite extends AnyFunSuite with Matchers {
 
   test("Reading events from a String reader works") {
     val reader = new CharArrayReader(rawEvents.mkString(System.lineSeparator()).toCharArray)
-    CSVReader[Event].readCSVFromReader(reader, ',', NoAction, Headers.None).toSeq should contain theSameElementsInOrderAs events.map(Success(_))
+    CSVReader[Event]
+      .readCSVFromReader(reader, ',', NoAction, Headers.None)
+      .toSeq should contain theSameElementsInOrderAs events.map(Success(_))
   }
 
   test("Reading events and get successes and failures works") {
     val reader = new CharArrayReader(rawEvents.mkString(System.lineSeparator()).toCharArray)
-    val (successes,failures) = CSVReader[Event].readCSVFromReader(reader, ',', NoAction, Headers.None).getSuccessesAndFailures
+    val (successes, failures) =
+      CSVReader[Event].readCSVFromReader(reader, ',', NoAction, Headers.None).getSuccessesAndFailures
     val expectedSuccesses = Seq(1 -> events(0), 2 -> events(1))
     successes should contain theSameElementsInOrderAs expectedSuccesses
-    failures should be (Seq.empty[Event])
+    failures should be(Seq.empty[Event])
   }
 
   test("Can read a file written with writeCSVToFile") {
-    val file = Files.createTempFile("casecsv",".csv").toFile
+    val file = Files.createTempFile("casecsv", ".csv").toFile
     events.writeCSVToFile(file)
-    CSVReader[Event].readCSVFromFile(file, headers = Headers.None) should contain theSameElementsInOrderAs events.map(Success(_))
+    CSVReader[Event].readCSVFromFile(file, headers = Headers.None) should contain theSameElementsInOrderAs events
+      .map(Success(_))
   }
 
   test("serializing a CSVReader should work") {
-    val csvReader = CSVReader[Event]
+    val csvReader             = CSVReader[Event]
     val csvReaderDeserialized = serializeAndDeserialize(csvReader)
 
     val result = csvReaderDeserialized.readCSVFromString("123|bar|\n456|foo|3", '|', NoAction, Headers.None)
 
-    result.length should be (2)
-    result should be (List(
-      Success(Event(123, "bar", None)),
-      Success(Event(456, "foo", Some(3)))))
+    result.length should be(2)
+    result should be(List(Success(Event(123, "bar", None)), Success(Event(456, "foo", Some(3)))))
   }
 
 }

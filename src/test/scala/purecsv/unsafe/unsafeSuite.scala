@@ -26,7 +26,7 @@ case class Event(ts: Long, msg: String, user: Option[Int])
 
 class unsafeSuite extends AnyFunSuite with Matchers {
 
-  private val events = Seq(Event(1,"foo",None),Event(2,"bar",Some(1)))
+  private val events    = Seq(Event(1, "foo", None), Event(2, "bar", Some(1)))
   private val rawEvents = Seq("1,foo,", "2,bar,1")
 
   test("Converting an iterable of events to CSV lines works") {
@@ -35,25 +35,23 @@ class unsafeSuite extends AnyFunSuite with Matchers {
 
   test("Reading events from a String reader works") {
     val reader = new CharArrayReader(rawEvents.mkString(System.lineSeparator()).toCharArray)
-    CSVReader[Event].readCSVFromReader(reader, headers = Headers.None).toSeq should be (events)
+    CSVReader[Event].readCSVFromReader(reader, headers = Headers.None).toSeq should be(events)
   }
 
   test("Can read a file written with writeCSVToFile") {
-    val file = Files.createTempFile("casecsv",".csv").toFile
+    val file = Files.createTempFile("casecsv", ".csv").toFile
     file.deleteOnExit()
     events.writeCSVToFile(file)
     CSVReader[Event].readCSVFromFile(file, headers = Headers.None) should contain theSameElementsInOrderAs events
   }
 
   test("serializing a CSVReader should work") {
-    val csvReader = CSVReader[Event]
+    val csvReader             = CSVReader[Event]
     val csvReaderDeserialized = serializeAndDeserialize(csvReader)
 
     val result = csvReaderDeserialized.readCSVFromString("123|bar|\n456|foo|3", '|', headers = Headers.None)
 
-    result.length should be (2)
-    result should be (List(
-      Event(123, "bar", None),
-      Event(456, "foo", Some(3))))
+    result.length should be(2)
+    result should be(List(Event(123, "bar", None), Event(456, "foo", Some(3))))
   }
 }

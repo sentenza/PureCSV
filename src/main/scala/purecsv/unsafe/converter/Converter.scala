@@ -19,28 +19,35 @@ import java.io.StringWriter
 import com.github.tototoshi.csv.CSVWriter
 
 /** Typeclass for Converters of A from/to B */
-trait Converter[A,B] extends Serializable {
+trait Converter[A, B] extends Serializable {
+
   /**
-   * @param b The initial value
-   * @return b converted to the type [[A]]
-   * @throws IllegalArgumentException if b cannot be converted to [[A]]
+   * @param b
+   *   The initial value
+   * @return
+   *   b converted to the type [[A]]
+   * @throws IllegalArgumentException
+   *   if b cannot be converted to [[A]]
    */
   def from(b: B): A
 
   /**
-   * @param a The initial value
-   * @return a converted to the type [[B]]
-   * @throws IllegalArgumentException if a cannot be converted to [[B]]
+   * @param a
+   *   The initial value
+   * @return
+   *   a converted to the type [[B]]
+   * @throws IllegalArgumentException
+   *   if a cannot be converted to [[B]]
    */
   def to(a: A): B
 }
 
 object Converter {
-  def apply[A,B](implicit conv: Converter[A,B]): Converter[A,B] = conv
+  def apply[A, B](implicit conv: Converter[A, B]): Converter[A, B] = conv
 }
 
 /** Converter from/to String */
-trait StringConverter[A] extends Converter[A,String]
+trait StringConverter[A] extends Converter[A, String]
 
 object StringConverter {
   def apply[A](implicit conv: StringConverter[A]): StringConverter[A] = conv
@@ -49,7 +56,7 @@ object StringConverter {
 object StringConverterUtils {
   def mkStringConverter[A](fromF: String => A, toF: A => String) = new StringConverter[A] {
     def from(s: String): A = fromF(s)
-    def to(a: A): String = toF(a)
+    def to(a: A): String   = toF(a)
   }
   def quoteTextIfNecessary(s: String): String = {
     val sw = new StringWriter(64)
@@ -71,7 +78,7 @@ object StringConverterUtils {
 }
 
 /** Converter from/to raw fields, represented as sequence of strings */
-trait RawFieldsConverter[A] extends Converter[A,Seq[String]]
+trait RawFieldsConverter[A] extends Converter[A, Seq[String]]
 
 object RawFieldsConverter {
   def apply[A](implicit conv: RawFieldsConverter[A]): RawFieldsConverter[A] = conv

@@ -16,18 +16,18 @@ package purecsv.safe.converter
 
 import scala.util.{Failure, Success, Try}
 
-
 /**
- * A version of [[purecsv.unsafe.converter.Converter]] with a special from method
- * for safe conversions. The method [[Converter!from()]] is defined starting from
- * [[Converter!tryFrom()]] but it throw [[IllegalArgumentException]] when
- * the result is [[Failure]]
+ * A version of [[purecsv.unsafe.converter.Converter]] with a special from method for safe conversions. The method
+ * [[Converter!from()]] is defined starting from [[Converter!tryFrom()]] but it throw [[IllegalArgumentException]]
+ * when the result is [[Failure]]
  */
-trait Converter[A,B] extends purecsv.unsafe.converter.Converter[A,B] {
+trait Converter[A, B] extends purecsv.unsafe.converter.Converter[A, B] {
+
   /**
-   * @param b The starting value from which we try the conversion to [[A]]
-   * @return A value of type [[A]] wrapped in [[Success]] if the conversion is successful else [[Failure]] with the
-   *         error
+   * @param b
+   *   The starting value from which we try the conversion to [[A]]
+   * @return
+   *   A value of type [[A]] wrapped in [[Success]] if the conversion is successful else [[Failure]] with the error
    */
   def tryFrom(b: B): Try[A]
   final override def from(b: B): A = tryFrom(b) match {
@@ -37,7 +37,7 @@ trait Converter[A,B] extends purecsv.unsafe.converter.Converter[A,B] {
 }
 
 /** Converter from/to String */
-trait StringConverter[A] extends Converter[A,String]
+trait StringConverter[A] extends Converter[A, String]
 
 object StringConverter {
   def apply[A](implicit conv: StringConverter[A]): StringConverter[A] = conv
@@ -46,12 +46,12 @@ object StringConverter {
 object StringConverterUtils {
   def mkStringConverter[A](fromF: String => Try[A], toF: A => String) = new StringConverter[A] {
     def tryFrom(s: String): Try[A] = fromF(s)
-    def to(a: A): String = toF(a)
+    def to(a: A): String           = toF(a)
   }
 }
 
 /** Converter from/to raw fields, represented as sequence of strings */
-trait RawFieldsConverter[A] extends Converter[A,Seq[String]]
+trait RawFieldsConverter[A] extends Converter[A, Seq[String]]
 
 object RawFieldsConverter {
   def apply[A](implicit conv: RawFieldsConverter[A]): RawFieldsConverter[A] = conv

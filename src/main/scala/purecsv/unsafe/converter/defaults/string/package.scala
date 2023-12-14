@@ -23,7 +23,7 @@ package object string {
   import purecsv.unsafe.converter.StringConverter
 
   def strToBool(s: String): Boolean = s match {
-    case "1" | "true"  | "True"  | "TRUE" => true
+    case "1" | "true" | "True" | "TRUE"    => true
     case "0" | "false" | "False" | "FALSE" => false
     case _ => throw new IllegalArgumentException(s"'$s' cannot be converter to boolean")
   }
@@ -33,26 +33,27 @@ package object string {
     else throw new IllegalArgumentException(s"'$s' cannot be converted to char")
   }
 
-  implicit val boolc:   StringConverter[Boolean] = mkStringConverter(strToBool,_.toString)
-  implicit val bytec:   StringConverter[Byte]    = mkStringConverter(_.toByte,_.toString)
-  implicit val charc:   StringConverter[Char]    = mkStringConverter(strToChar,_.toString)
-  implicit val doublec: StringConverter[Double]  = mkStringConverter(_.toDouble,_.toString)
-  implicit val floatc:  StringConverter[Float]   = mkStringConverter(_.toFloat,_.toString)
-  implicit val intc:    StringConverter[Int]     = mkStringConverter(_.toInt,_.toString)
-  implicit val longc:   StringConverter[Long]    = mkStringConverter(_.toLong,_.toString)
-  implicit val shortc:  StringConverter[Short]   = mkStringConverter(_.toShort,_.toString)
-  implicit val uuidc:   StringConverter[UUID]    = mkStringConverter(UUID.fromString,_.toString)
-  implicit val stringc: StringConverter[String]  = new StringConverter[String] {
+  implicit val boolc: StringConverter[Boolean]  = mkStringConverter(strToBool, _.toString)
+  implicit val bytec: StringConverter[Byte]     = mkStringConverter(_.toByte, _.toString)
+  implicit val charc: StringConverter[Char]     = mkStringConverter(strToChar, _.toString)
+  implicit val doublec: StringConverter[Double] = mkStringConverter(_.toDouble, _.toString)
+  implicit val floatc: StringConverter[Float]   = mkStringConverter(_.toFloat, _.toString)
+  implicit val intc: StringConverter[Int]       = mkStringConverter(_.toInt, _.toString)
+  implicit val longc: StringConverter[Long]     = mkStringConverter(_.toLong, _.toString)
+  implicit val shortc: StringConverter[Short]   = mkStringConverter(_.toShort, _.toString)
+  implicit val uuidc: StringConverter[UUID]     = mkStringConverter(UUID.fromString, _.toString)
+  implicit val stringc: StringConverter[String] = new StringConverter[String] {
     override def from(s: String): String = s
-    override def to(s: String): String = StringConverterUtils.quoteTextIfNecessary(s)
+    override def to(s: String): String   = StringConverterUtils.quoteTextIfNecessary(s)
   }
 
-  implicit def optionc[A](implicit ac: StringConverter[A]): StringConverter[Option[A]] = new StringConverter[Option[A]] {
-    override def from(s: String): Option[A] = s match {
-      case "" => None
-      case x  => Some(ac.from(x))
+  implicit def optionc[A](implicit ac: StringConverter[A]): StringConverter[Option[A]] =
+    new StringConverter[Option[A]] {
+      override def from(s: String): Option[A] = s match {
+        case "" => None
+        case x  => Some(ac.from(x))
+      }
+      override def to(v: Option[A]): String = v.map(ac.to).getOrElse("")
     }
-    override def to(v: Option[A]): String = v.map(ac.to).getOrElse("")
-  }
 
 }

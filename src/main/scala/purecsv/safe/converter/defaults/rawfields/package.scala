@@ -19,7 +19,6 @@ import shapeless.{::, Generic, HList, HNil}
 
 import scala.util.{Failure, Success, Try}
 
-
 package object rawfields {
 
   import purecsv.safe.converter.RawFieldsConverter
@@ -31,30 +30,32 @@ package object rawfields {
   implicit val deriveHNil: RawFieldsConverter[HNil] = new RawFieldsConverter[HNil] {
     override def tryFrom(s: Seq[String]): Try[HNil] = s match {
       case Nil => Success(HNil)
-      case _   => illegalConversion(s.mkString("[",", ","]"), "HNil")
+      case _   => illegalConversion(s.mkString("[", ", ", "]"), "HNil")
     }
     override def to(a: HNil): Seq[String] = Seq.empty
   }
 
-  implicit def deriveHCons[V, T <: HList]
-                          (implicit sc:  StringConverter[V],
-                                   fto: RawFieldsConverter[T])
-                                      : RawFieldsConverter[V :: T] = new RawFieldsConverter[V :: T] {
+  implicit def deriveHCons[V, T <: HList](implicit
+      sc: StringConverter[V],
+      fto: RawFieldsConverter[T]
+  ): RawFieldsConverter[V :: T] = new RawFieldsConverter[V :: T] {
     override def tryFrom(s: Seq[String]): Try[V :: T] = s match {
       case Nil => illegalConversion("", classOf[V :: T].toString)
-      case _   => for {
-        head <- sc.tryFrom(s.head)
-        tail <- fto.tryFrom(s.tail)
-      } yield head :: tail
+      case _ =>
+        for {
+          head <- sc.tryFrom(s.head)
+          tail <- fto.tryFrom(s.tail)
+        } yield head :: tail
     }
 
     override def to(a: ::[V, T]): Seq[String] = sc.to(a.head) +: fto.to(a.tail)
   }
 
-  implicit def deriveClass[A, R](implicit gen: Generic.Aux[A, R],
-                                         conv: RawFieldsConverter[R])
-                                             : RawFieldsConverter[A] = new RawFieldsConverter[A] {
+  implicit def deriveClass[A, R](implicit
+      gen: Generic.Aux[A, R],
+      conv: RawFieldsConverter[R]
+  ): RawFieldsConverter[A] = new RawFieldsConverter[A] {
     override def tryFrom(s: Seq[String]): Try[A] = conv.tryFrom(s).map(gen.from)
-    override def to(a: A): Seq[String] = conv.to(gen.to(a))
+    override def to(a: A): Seq[String]           = conv.to(gen.to(a))
   }
 }
