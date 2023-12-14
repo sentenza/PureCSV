@@ -55,7 +55,7 @@ object RecordSplitterImpl extends RecordSplitter[Reader] {
                                                   fields: Seq[String],
                                                   headerMapping: Map[String, String]) =
     csvReader.iteratorWithHeaders
-      .map(line => line.mapValues(trimming.trim))
+      .map(line => line.view.mapValues(trimming.trim))
       .filter(array => array.size != 1 || array.head._2.trim != EmptyString)
       .map(f => fields.map(field => f.getOrElse(headerMapping.getOrElse(field, field), EmptyString)))
 

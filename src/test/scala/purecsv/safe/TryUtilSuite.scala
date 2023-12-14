@@ -29,7 +29,7 @@ class MyException(val s: String) extends RuntimeException(s) {
 class TryUtilSuite extends AnyFunSuite with Matchers {
   import tryutil._
 
-  def failure(s: String) = Failure(new MyException(s))
+  def failure(s: String): Failure[RuntimeException] = Failure(new MyException(s))
 
   test("getSuccessesAndFailures partition an Iterator[Try[A]] into successes and failures") {
     val startingSuccesses = Seq(Success(1),Success(2))

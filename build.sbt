@@ -1,22 +1,25 @@
 import sbt.Keys._
 
+Global / onChangedBuildSource := ReloadOnSourceChanges
+
 lazy val buildSettings = Seq(
-  organization := "io.kontainers",
-  scalaVersion := "2.13.10",
+  organization       := "io.kontainers",
+  scalaVersion       := "2.13.12",
   crossScalaVersions := Seq("2.12.15", scalaVersion.value)
 )
 
 lazy val publishSettings = Seq(
-  publishMavenStyle := true,
-  Test/ publishArtifact := false,
+  publishMavenStyle             := true,
+  Test / publishArtifact        := false,
   releasePublishArtifactsAction := PgpKeys.publishSigned.value,
   publishTo := Some(
     if (isSnapshot.value)
-      Opts.resolver.sonatypeSnapshots
+      Opts.resolver.sbtSnapshots
     else
-      Opts.resolver.sonatypeStaging),
-    pomIncludeRepository := { x => false },
-    pomExtra := (
+      Opts.resolver.sonatypeStaging
+  ),
+  pomIncludeRepository := { x => false },
+  pomExtra := (
     <url>https://github.com/kontainers/PureCSV</url>
       <licenses>
         <license>
@@ -42,15 +45,16 @@ lazy val publishSettings = Seq(
   )
 )
 
-lazy val pureCSV = project.in(file(".")).
-  settings(buildSettings).
-  settings(publishSettings).
-  settings(
+lazy val pureCSV = project
+  .in(file("."))
+  .settings(buildSettings)
+  .settings(publishSettings)
+  .settings(
     name := "purecsv",
     scalacOptions ++= Seq("-feature", "-deprecation"),
     libraryDependencies ++= Seq(
-      "com.chuusai" %% "shapeless" % "2.3.10",
+      "com.chuusai"          %% "shapeless" % "2.3.10",
       "com.github.tototoshi" %% "scala-csv" % "1.3.10",
-      "org.scalatest" %% "scalatest" % "3.2.14" % Test
+      "org.scalatest"        %% "scalatest" % "3.2.17" % Test
     )
   )
