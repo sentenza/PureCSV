@@ -3,8 +3,6 @@
 [![Build Status](https://travis-ci.org/kontainers/PureCSV.svg?branch=master)](https://travis-ci.org/kontainers/PureCSV)
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/io.kontainers/purecsv_2.13/badge.svg)](https://maven-badges.herokuapp.com/maven-central/io.kontainers/purecsv_2.13)
 
-This is a fork of https://github.com/melrief/PureCSV with Scala 2.13 support and a few extra features.
-
 PureCSV is a Scala library for working with the CSV format. The
 library gets rid of most of the boilerplate required to work with CSV
 
@@ -62,7 +60,7 @@ scala> class Interval(val start: Long, val end: Long) { override def toString: S
 scala> Seq(new Interval(1,10),new Interval(11,20)).writeCSVToFileName("/tmp/example.csv")
 scala> scala.io.Source.fromFile("/tmp/example.csv").getLines.toList
 res0: List[String] = List(1,10, 11,20)
-scala> CSVReader[Interval].readCSVFromFile("/tmp/example.csv")
+scala> CSVReader[Interval].readCSVFromFileName("/tmp/example.csv")
 res2: List[Interval] = List(Interval(1,10), Interval(11,20))
 ```
 
@@ -76,7 +74,7 @@ used to read data
 ```scala
 scala> import purecsv.unsafe._
 scala> class Interval(val start: Long, val end: Long) { override def toString: String = s"Interval($start,$end)" }
-scala> CSVReader[Interval].readCSVFromFile("/tmp/example.csv")
+scala> CSVReader[Interval].readCSVFromFileName("/tmp/example.csv")
 res2: List[Interval] = List(Interval(1,10), Interval(11,20))
 ```
 
